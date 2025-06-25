@@ -15,17 +15,20 @@ export class OrderService {
   private apiGetAllOrders = `${environment.apiBaseUrl}/orders/get-orders-by-keyword`;
   public latestOrderId: number | null = null;
   constructor(private http: HttpClient) {
-    // Khôi phục từ localStorage nếu có
-    const saved = localStorage.getItem('latestOrderId');
-    this.latestOrderId = saved ? +saved : null;
+    // Khôi phục từ localStorage nếu có (chỉ trên browser)
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = localStorage.getItem('latestOrderId');
+      this.latestOrderId = saved ? +saved : null;
+    }
   }
 
   placeOrder(orderData: OrderDTO): Observable<OrderResponse> {
-
     return this.http.post<OrderResponse>(this.apiUrl, orderData).pipe(
       tap(res => {
         this.latestOrderId = res.id;
-        localStorage.setItem('latestOrderId', res.id.toString());
+        if (typeof window !== 'undefined' && window.localStorage) {
+          localStorage.setItem('latestOrderId', res.id.toString());
+        }
       })
     );
   }
@@ -51,13 +54,18 @@ export class OrderService {
     return this.http.delete(url, { responseType: 'text' });
   }
   getLatestOrder(): Observable<Order> {
-    const token = localStorage.getItem('access-token') || '';
+    let token = '';
+    if (typeof window !== 'undefined' && window.localStorage) {
+      token = localStorage.getItem('access-token') || '';
+    }
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<Order>(`${this.apiUrl}/latest`, { headers })
       .pipe(
         tap(res => {
           // Lưu lại token mới nếu server trả về
-          localStorage.setItem('access-token', res.token);
+          if (typeof window !== 'undefined' && window.localStorage && (res as any).token) {
+            localStorage.setItem('access-token', (res as any).token);
+          }
         })
       );
   }

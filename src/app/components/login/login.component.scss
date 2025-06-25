@@ -1,112 +1,146 @@
-@import '../../styles/shared-styles.scss';
+.login-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+}
 
-.container {
-    color: white;
-    height: 100vh;
+.login-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1010;
+  padding: 16px;
+  animation: fadeIn 0.3s ease;
 }
+
 .login-form {
-    background-color: $shopapp-background-color;
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 500px;
-    border: 1px solid rgb(32, 34, 60);
-    align-items: center;
-    justify-content: center;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 40px;
+  width: 27vw; /* CHI TIẾT QUAN TRỌNG: 60% chiều ngang của viewport */
+  max-width: none; /* Bỏ giới hạn mặc định */
+  min-width: 320px; /* Giới hạn nhỏ nhất để không bị bé ở mobile */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  animation: fadeInScale 0.3s ease-out;
 }
+
+
+/* Nút đóng bên trong form */
+.login-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #1976d2;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s;
+}
+.login-close:hover {
+  color: #009981;
+}
+
 .login-header {
-    text-align: center;
-    color: $shopapp-title-color;
-    margin-bottom: 20px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #222;
+  margin-top: 12px;
 }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .form-control {
-    background-color: transparent;
-    border: none;
-    color: white;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  transition: border-color 0.2s ease;
 }
 .form-control:focus {
-    color: white;
-    background-color: transparent;
-    outline: none;
-    border-color: transparent;    
-}
-  
-.divider-nospace {
-    border-top: 1px solid white;
+  border-color: #1976d2;
+  outline: none;
 }
 
-.password-field {
-    position: relative;
+.input-password-wrapper {
+  position: relative;
 }
 .password-toggle {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    color: $shopapp-title-color;
-    cursor: pointer;
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: #666;
+  transition: color 0.2s;
 }
-.checkbox-text {
-    color: rgb(243, 165, 42);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-}
-/* Màu checkbox khi được chọn */
-.checkbox-text input[type="checkbox"]:checked {
-    border-color: white;
-    background-color: $shopapp-tint-color;
+.password-toggle:hover {
+  color: #1976d2;
 }
 
-.form-check-input {
-    margin-right: 5px;
+/* Hàng ghi nhớ + quên mật khẩu */
+.checkbox-remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
 }
 
+/* Link */
 .register-link {
-    color: $shopapp-title-color;
-    text-decoration: none;
+  color: #1976d2;
+  text-decoration: underline;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.2s;
 }
-.access-right {
-    margin-top: 20px;
-    width: 200px;
-    color: white;
-    background-color: $shopapp-background-color !important;
-    border: 1px solid $shopapp-tint-color;
-}
-
-.access-right:focus {
-    border: 1px solid $shopapp-tint-color;
+.register-link:hover {
+  color: #009981;
 }
 
-.form-control::placeholder {
-    /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: rgba(243, 165, 42, 0.4);
-    opacity: 1;
-    /* Firefox */
-}
-
-.form-control:-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: rgba(243, 165, 42, 0.4);
-}
-
-.form-control::-ms-input-placeholder {
-    /* Microsoft Edge */
-    color: rgba(243, 165, 42, 0.4);
-}
-
+/* Nút login */
 .login-button {
-    background: linear-gradient(to right, $shopapp-tint-color, $shopapp-color);
-    color: white;
-    border-radius: 30px;
-    width: 100%;
-    padding: 10px 0;
-    margin-top: 20px;
-    border: none;
+  padding: 12px;
+  border-radius: 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background-color: #009981;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
 }
+.login-button:hover {
+  background-color: #1976d2;
+}
+
 .divider {
-    height: 1px;
-    background-color: rgb(243, 165, 42);
-    /* background-color: rgb(105, 244, 181) */
-    margin: 20px;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .login-form {
+    padding: 24px;
+  }
+  .checkbox-remember-forgot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
 }

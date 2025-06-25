@@ -9,6 +9,8 @@ import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { OrderService } from '../../services/order.service';
+import { FormsModule } from '@angular/forms';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-header',
@@ -18,7 +20,9 @@ import { OrderService } from '../../services/order.service';
   imports: [
     CommonModule,
     NgbModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
+    SidebarComponent
   ]
 })
 export class HeaderComponent implements OnInit {
@@ -26,7 +30,7 @@ export class HeaderComponent implements OnInit {
   isPopoverOpen = false;
   activeNavItem: number = 0;
   latestOrderId: number | null = null;
-
+  keyword: string = '';
 
   constructor(
     private userService: UserService,
@@ -66,8 +70,6 @@ export class HeaderComponent implements OnInit {
     }
     this.isPopoverOpen = false;
   }
-
-
 
   setActiveNavItem(index: number) {
     this.activeNavItem = index;

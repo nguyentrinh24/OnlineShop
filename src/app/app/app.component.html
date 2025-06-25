@@ -1,2 +1,14 @@
 <!-- <h1>sss</h1> -->
-<router-outlet></router-outlet>
+<app-header-subsection></app-header-subsection>
+<app-header></app-header>
+<div class="layout-container">
+  <app-sidebar></app-sidebar>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+<app-footer></app-footer>
+<button class="floating-chat-btn" title="Chat hỗ trợ" (click)="onChatClick()">
+  <i class="fas fa-comments"></i>
+</button>
+<app-support-popup></app-support-popup>

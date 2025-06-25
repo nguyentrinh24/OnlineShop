@@ -1,24 +1,6 @@
-<app-header></app-header>
+<!-- <app-header></app-header> -->
 <div class="container">
-  <div class="intro-section">
-    <h1>Đây là trang Home</h1>
-    <p>Trang này hiển thị danh sách các sản phẩm, kèm ảnh</p>
-    <p>Các bạn có thể chọn xem sản phẩm và mua hàng tại đây</p>
-  </div>
-  <!--Đoạn này có 1 ô searchbox bên trái, 1 combobox bên phải  -->
-  <div class="search-box">
-    <input type="text" class="form-control search-input" placeholder="Tìm sản phẩm" [(ngModel)]="keyword">
-    <select class="form-control product-category" [(ngModel)]="selectedCategoryId">
-      <option [value]="0">Tất cả</option>
-      @for(category of categories; track category.name) {
-      <option [value]="category.id">
-        {{ category.name }}
-      </option>
-      }
-
-    </select>
-    <button class="btn btn-primary" (click)="searchProducts()">Tìm kiếm</button>
-  </div>
+  
   <div class="row">
     @for(product of products; track product.id) {
     <div class="col-lg-3  col-md-6">
@@ -69,5 +51,3 @@
     </ul>
   </nav>
 </div>
-
-<app-footer></app-footer>

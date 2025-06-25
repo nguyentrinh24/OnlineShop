@@ -1,0 +1,23 @@
+<div class="support-fab" (click)="openPopup()">
+  <i class="fas fa-headset"></i>
+</div>
+
+<div class="support-popup-overlay" *ngIf="isOpen" (click)="closePopup()"></div>
+<div class="support-popup" *ngIf="isOpen">
+  <button class="close-btn" (click)="closePopup()"><i class="fas fa-times"></i></button>
+  <h4>Hỗ trợ khách hàng</h4>
+  <ul>
+    <li (click)="openMessenger()">
+      <span class="icon messenger"><i class="fab fa-facebook-messenger"></i></span>
+      Nhắn Messenger
+    </li>
+    <li (click)="openZalo()">
+      <span class="icon zalo"><img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" alt="Zalo" /></span>
+      Nhắn Zalo
+    </li>
+    <li (click)="callPhone()">
+      <span class="icon phone"><i class="fas fa-phone-alt"></i></span>
+      Gọi: <b>0342424988</b>
+    </li>
+  </ul>
+</div> 

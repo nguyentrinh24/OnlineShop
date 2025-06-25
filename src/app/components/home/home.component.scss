@@ -2,147 +2,77 @@
 
 .intro-section {
     text-align: center;
-    color: white;
-    padding: 20px;
-}
-
-.search-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-.product-category {
-    width: 200px;
-    background-color: $shopapp-background-color;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    padding: 5px;
-    border-radius: 4px;
-    appearance: none; // ẩn style mặc định của trình duyệt
-}
-
-.product-category option {
-    background-color: $shopapp-background-color;
-    color: white;
-}
-
-
-.search-input {
-    width: 300px;
-    background-color: $shopapp-background-color;
-    margin-right: 10px;
-    border-color: rgba(255, 255, 255, 0.5);
-    color: white;
-}
-
-.form-control {
-    background-color: transparent;
-    color: white;
-}
-
-.form-control::placeholder {
-    /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: rgba(255, 255, 255, 0.5);
-    opacity: 1;
-    /* Firefox */
-}
-
-.form-control:-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.form-control::-ms-input-placeholder {
-    /* Microsoft Edge */
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.row {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.col-lg-4,
-.col-md-6 {
-    display: flex;
-    flex-direction: column;
+    color: $shopapp-title-color;
+    padding: 32px 0 16px 0;
+    font-size: 2rem;
+    font-weight: 700;
 }
 
 .product-item {
-    min-height: 500px;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 18px 14px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s;
 }
-
-.product-item {
-    background-color: $shopapp-background-color;
-    border: 1px solid rgb(35, 39, 61);
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-    height: 100%; // Cho phép card cao bằng nhau
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.product-item:hover {
+    box-shadow: 0 4px 16px rgba(0,94,196,0.10);
 }
 
 .product-image {
     width: 100%;
-    height: auto;
+    height: 180px;
+    object-fit: contain;
     margin-bottom: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
 }
 
 .product-name {
-    color: white;
+    color: $shopapp-title-color;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
 }
 
 .product-description {
-    color: rgb(173, 178, 203);
-}
-
-.product-warranty {
-    color: $shopapp-tint-color;
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
 }
 
 .product-price {
-    color: white;
+    color: $shopapp-color;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
-.product-rating {
-    color: #FFD700;
-    margin-top: 10px;
+.product-quantity {
+    color: $shopapp-tint-color;
+    font-size: 0.95rem;
 }
 
-.product-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.space-x {
-    margin: 0 5px;
-    /*margin-top, margin-right, margin-bottom, margin-left*/
-}
-
-.page-number {
-    cursor: pointer;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
+.pagination .page-item .page-link {
+    color: $shopapp-color;
+    border-radius: 6px;
     margin: 0 2px;
-    border-radius: 3px;
 }
-
-.page-number.active {
-    background-color: $shopapp-color !important;
+.pagination .page-item.active .page-link, .pagination .page-item .page-link:hover {
+    background-color: $shopapp-color;
     color: #fff;
-    border-color: $shopapp-color !important;
 }
 
 .btn-primary {
     background-color: $shopapp-color;
     border-color: $shopapp-color;
+    color: #fff;
+    border-radius: 20px;
+    font-weight: 600;
+    padding: 8px 20px;
 }
-
 .btn.btn-primary {
     margin-left: 10px;
 }

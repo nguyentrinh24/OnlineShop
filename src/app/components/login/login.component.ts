@@ -132,4 +132,8 @@ export class LoginComponent implements OnInit {
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
+  closeLoginPopup() {
+    // Nếu dùng biến hiển thị popup, set biến đó về false. Nếu không, tạm thời điều hướng về trang chủ.
+    this.router.navigate(['/']);
+  }
 }

@@ -1,17 +1,23 @@
 <header>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <!-- Logo bên trái -->
       <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="40" height="40">
-          <circle cx="50" cy="50" r="48" fill="#282c34" />
-          <path d="M30 35h40v25H30z" fill="#B0B8FF" />
-          <rect x="25" y="63" width="50" height="5" rx="2" ry="2" fill="#90CAF9" />
+        <svg width="36" height="36" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="-25.926" cy="41.954" r="29.873" fill="#009981"
+            transform="rotate(-76.714 -48.435 5.641) scale(8.56802)" />
+          <path
+            d="M372.164 189.203c0-10.008-8.576-18.593-18.584-18.593h-34.323l-78.638-90.084c-7.154-8.577-18.592-11.439-30.03-8.577l-27.17 8.577c-4.292 1.43-5.723 7.154-2.862 10.007l85.8 81.508H136.236c-4.293 0-7.154 2.861-7.154 7.154v14.292c0 10.016 8.585 18.592 18.592 18.592h20.015v68.639c0 51.476 27.17 81.499 72.931 81.499 14.292 0 25.739-1.431 40.03-7.146v45.753c0 12.87 10.016 22.886 22.885 22.886h20.015c4.293 0 8.577-4.293 8.577-8.586V210.648h32.893c4.292 0 7.145-2.861 7.145-7.145v-14.3zM280.65 312.17c-8.576 4.292-20.015 5.723-28.591 5.723-22.886 0-34.324-11.438-34.324-37.176v-68.639h62.915v100.092z"
+            fill="#fff" />
         </svg>
-        <span class="text-light fw-semibold fs-4">TechStore</span>
+        <span class="fw-semibold brand-name" style="color: #009981; font-size: 1.25rem;">TMobile</span>
       </a>
 
+      <!-- Search input -->
+      <div class="header-search">
+        <input type="text" class="form-control search-input" placeholder="Tìm sản phẩm" [(ngModel)]="keyword">
+      </div>
 
+      
 
       <!-- Nút toggle menu cho mobile -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
