@@ -69,6 +69,7 @@
   border-radius: 10px;
   border: 1px solid #ccc;
   transition: border-color 0.2s ease;
+  background-color: #fff;
 }
 .form-control:focus {
   border-color: #1976d2;
@@ -122,10 +123,26 @@
   color: white;
   border: none;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s;
+  position: relative;
 }
-.login-button:hover {
+.login-button:hover:not(:disabled) {
   background-color: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 153, 129, 0.3);
+}
+
+.login-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.login-button:disabled:hover {
+  background-color: #ccc;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Nút đăng nhập Google */

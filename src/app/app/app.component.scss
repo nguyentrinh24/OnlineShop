@@ -1,52 +1,3 @@
-.layout-container {
-  display: flex;
-  min-height: calc(100vh - 120px); /* trừ header + footer */
-}
-
-app-sidebar {
-  flex: 0 0 280px;
-  min-width: 280px;
-  max-width: 280px;
-  background: #f8f9fa;
-}
-
-.main-content {
-  flex: 1 1 auto;
-  padding: 32px 24px;
-  background: #fff;
-  min-height: 100vh;
-}
-
-app-header {
-  display: block;
-  width: 100%;
-  z-index: 10;
-}
-
-app-footer {
- 
-  width: 100%;
-  background: #222;
-  color: #fff;
-  padding: 24px 0 12px 0;
-  text-align: center;
-}
-
-@media (max-width: 900px) {
-  .layout-container {
-    flex-direction: column;
-  }
-  app-sidebar {
-    max-width: 100%;
-    min-width: 100%;
-    order: 2;
-  }
-  .main-content {
-    order: 1;
-    padding: 16px 4px;
-  }
-}
-
 .floating-chat-btn {
   position: fixed;
   right: 32px;
@@ -66,6 +17,7 @@ app-footer {
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s;
 }
+
 .floating-chat-btn:hover {
   background: #1976d2;
   box-shadow: 0 6px 24px rgba(0,0,0,0.22);

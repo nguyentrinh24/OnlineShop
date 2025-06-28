@@ -30,7 +30,7 @@
           </div>
           <div class="product-info">
             <h5 class="product-name">{{ product.name }}</h5>
-            <p class="product-price">${{ product.price | number:'1.2-2' }}</p>
+            <p class="product-price">{{ product.price | number:'1.2' }}</p>
             <div class="product-status">
               <span class="badge bg-success" *ngIf="product.stock_quantity > 0">Còn hàng</span>
               <span class="badge bg-danger" *ngIf="product.stock_quantity <= 0">Hết hàng</span>

@@ -52,9 +52,9 @@
 
         <!-- Giá -->
         <div class="product-price-section">
-          <span class="current-price">${{ product.price | number: '1.2-2' }}</span>
+          <span class="current-price">{{ product.price | number: '1.2' }}</span>
           <ng-container *ngIf="product.price_old && product.price_old > product.price">
-            <span class="old-price">${{ product.price_old | number: '1.2-2' }}</span>
+            <span class="old-price">{{ product.price_old | number: '1.2' }}</span>
             <span class="discount-badge">-{{ getDiscountPercentage() }}%</span>
           </ng-container>
         </div>

@@ -27,6 +27,13 @@ import { provideRouter } from '@angular/router';
 export class AdminComponent implements OnInit {
   //adminComponent: string = 'orders';
   userResponse?: UserResponse | null;
+  
+  // Dashboard stats
+  totalOrders: number = 0;
+  totalProducts: number = 0;
+  totalUsers: number = 0;
+  totalCategories: number = 0;
+  
   constructor(
     private userService: UserService,
     private tokenService: TokenService,
@@ -36,12 +43,17 @@ export class AdminComponent implements OnInit {
   }
   ngOnInit() {
     this.userResponse = this.userService.getUserResponseFromLocalStorage();
-    // Default router
-    //debugger
-    if (this.router.url === '/admin') {
-      this.router.navigate(['/admin/orders']);
-    }
+    this.loadDashboardStats();
   }
+  
+  loadDashboardStats() {
+    // TODO: Load actual stats from services
+    this.totalOrders = 25;
+    this.totalProducts = 150;
+    this.totalUsers = 1200;
+    this.totalCategories = 8;
+  }
+
   confirmLogout() {
     const confirmed = confirm('Bạn có chắc chắn muốn đăng xuất không?');
     if (confirmed) {

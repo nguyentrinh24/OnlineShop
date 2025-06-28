@@ -13,20 +13,31 @@ import { UserProfileComponent } from './components/user-profile/user.profile.com
 import { AdminComponent } from './components/admin/admin.component';
 import { AuthGuardFn } from './guards/auth.guard';
 import { AdminGuardFn } from './guards/admin.guard';
+import { UserLayoutComponent } from './components/user-layout/user-layout.component';
+import { AdminLayoutComponent } from './components/admin-layout/admin-layout.component';
 //import { OrderAdminComponent } from './components/admin/order/order.admin.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'products/:id', component: DetailProductComponent },
-  { path: 'orders', component: OrderComponent, canActivate: [AuthGuardFn] },
-  { path: 'user-profile', component: UserProfileComponent, canActivate: [AuthGuardFn] },
-  { path: 'orders/:id', component: OrderDetailComponent },
-  //Admin   
+  {
+    path: '',
+    component: UserLayoutComponent,
+    children: [
+      { path: '', component: HomeComponent },
+      { path: 'login', component: LoginComponent },
+      { path: 'register', component: RegisterComponent },
+      { path: 'products/:id', component: DetailProductComponent },
+      { path: 'orders', component: OrderComponent, canActivate: [AuthGuardFn] },
+      { path: 'user-profile', component: UserProfileComponent, canActivate: [AuthGuardFn] },
+      { path: 'orders/:id', component: OrderDetailComponent },
+    ]
+  },
   {
     path: 'admin',
-    component: AdminComponent,
-    canActivate: [AdminGuardFn]
-  },
+    component: AdminLayoutComponent,
+    canActivate: [AdminGuardFn],
+    children: [
+      { path: '', component: AdminComponent },
+      // Thêm các route con cho admin ở đây nếu có
+    ]
+  }
 ];

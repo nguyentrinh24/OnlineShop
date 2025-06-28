@@ -32,7 +32,8 @@ export class LoginComponent implements OnInit {
   password: string = '';
   showPassword: boolean = false;
   rememberMe: boolean = true;
-  userResponse?: UserResponse
+  userResponse?: UserResponse;
+  isLoading: boolean = false;
 
   onPhoneNumberChange() {
     console.log(`Phone typed: ${this.phoneNumber}`);
@@ -48,7 +49,7 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Không cần load roles nữa
+    // Không cần load roles nữa vì backend sẽ tự động xác định
   }
   
   createAccount() {
@@ -58,6 +59,9 @@ export class LoginComponent implements OnInit {
   }
   
   login() {
+    if (this.isLoading) return; // Prevent multiple submissions
+    
+    this.isLoading = true;
     const message = `phone: ${this.phoneNumber}` +
       `password: ${this.password}`;
     //alert(message);
@@ -65,9 +69,9 @@ export class LoginComponent implements OnInit {
 
     const loginDTO: LoginDTO = {
       phone_number: this.phoneNumber,
-      password: this.password,
-      role_id: 2 // Mặc định role user (role_id = 2)
+      password: this.password
     };
+    
     this.userService.login(loginDTO).subscribe({
       next: (response: LoginResponse) => {
         //debugger;
@@ -83,20 +87,21 @@ export class LoginComponent implements OnInit {
                 date_of_birth: new Date(response.date_of_birth),
               };
               this.userService.saveUserResponseToLocalStorage(this.userResponse);
-              // Sửa logic routing theo role_id
+              // Backend sẽ tự động xác định role, frontend chỉ cần routing dựa trên role
               if (this.userResponse?.role.id === 1) {
                 this.router.navigate(['/admin']); // role_id 1 = admin
               } else if (this.userResponse?.role.id === 2) {
                 this.router.navigate(['']); // role_id 2 = user
               }
-
             },
             complete: () => {
               this.cartService.refreshCart();
+              this.isLoading = false;
               //debugger;
             },
             error: (error: any) => {
               //debugger;
+              this.isLoading = false;
               alert(error.error.message);
             }
           })
@@ -107,6 +112,7 @@ export class LoginComponent implements OnInit {
       },
       error: (error: any) => {
         //debugger;
+        this.isLoading = false;
         alert(error.error.message);
       }
     });

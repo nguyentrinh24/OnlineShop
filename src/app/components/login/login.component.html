@@ -59,7 +59,10 @@
       </div>
 
       <!-- Nút đăng nhập -->
-      <button type="submit" class="login-button">Đăng nhập</button>
+      <button type="submit" class="login-button" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Đăng nhập</span>
+        <span *ngIf="isLoading">Đang đăng nhập...</span>
+      </button>
 
       <div class="divider"></div>
 
