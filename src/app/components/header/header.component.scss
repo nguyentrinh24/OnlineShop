@@ -87,3 +87,47 @@ header {
     background-color: #f0f0f0;
     color: $shopapp-tint-color;
 }
+
+.dropdown-menu.show {
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 4px rgba(0,153,129,0.08);
+  border: none;
+  padding: 0.5rem 0;
+  background: #fff;
+  min-width: 220px;
+  animation: dropdownFadeIn 0.18s;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-menu .dropdown-item {
+  padding: 12px 20px;
+  font-size: 15px;
+  color: #333;
+  border-radius: 6px;
+  transition: background 0.18s, color 0.18s;
+}
+.dropdown-menu .dropdown-item:hover {
+  background: #f5f5f5;
+  color: $shopapp-color;
+}
+.dropdown-menu .dropdown-divider {
+  margin: 4px 0;
+}
+
+.dropdown-menu .dropdown-item.text-muted {
+  color: #aaa;
+  font-style: italic;
+}
+
+.dropdown-menu .dropdown-item.text-primary {
+  color: $shopapp-color;
+  font-weight: 600;
+}
+
+.dropdown-menu .dropdown-item.text-danger {
+  color: #dc3545;
+}

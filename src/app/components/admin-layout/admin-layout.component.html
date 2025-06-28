@@ -5,6 +5,7 @@
       <i class="fas fa-sign-out-alt"></i> Logout
     </button>
   </header>
+  <app-confirm-logout-modal *ngIf="showLogoutModal" (confirm)="onLogoutConfirm()" (cancel)="onLogoutCancel()"></app-confirm-logout-modal>
   
   <div class="admin-container">
     <nav class="admin-sidebar">

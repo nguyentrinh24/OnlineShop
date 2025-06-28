@@ -32,11 +32,18 @@
           </li>
           <li class="nav-item position-relative">
             <a class="nav-link d-flex align-items-center" [ngClass]="{ 'active': activeNavItem === 1 }"
-              (click)="toggleNotificationDropdown($event); setActiveNavItem(1)" style="cursor:pointer;">
+               (click)="onNotificationClick($event)" style="cursor:pointer;">
               <i class="fas fa-bell me-1"></i>
               Thông báo
               <span *ngIf="unreadCount > 0" class="badge bg-danger position-absolute top-0 start-100 translate-middle p-1 rounded-circle" style="font-size: 10px;">{{ unreadCount }}</span>
             </a>
+            <!-- Dropdown yêu cầu login cho thông báo -->
+            <div class="dropdown-menu dropdown-menu-end show" *ngIf="showLoginDropdownForNotification" style="min-width: 220px; right:0; left:auto;">
+              <div class="dropdown-item text-center text-muted">Bạn cần đăng nhập để sử dụng chức năng này.</div>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item text-primary fw-bold" (click)="onLoginDropdownClick()">Đăng nhập</button>
+            </div>
+            <!-- Dropdown thông báo thật sự nếu đã login (giữ nguyên) -->
             <div class="dropdown-menu dropdown-menu-end show" *ngIf="notificationDropdownOpen" style="min-width: 320px; max-width: 350px; max-height: 400px; overflow-y: auto; right:0; left:auto;">
               <div *ngIf="notifications.length === 0" class="dropdown-item text-muted">Không có thông báo</div>
               <div *ngFor="let n of notifications" class="dropdown-item" [ngClass]="n.type">
@@ -48,9 +55,10 @@
               <button class="dropdown-item text-danger" (click)="clearAllNotifications()">Xóa tất cả</button>
             </div>
           </li>
-          <li class="nav-item">
+          <!-- Cart nav-item: only show if logged in -->
+          <li class="nav-item position-relative" *ngIf="userResponse">
             <a class="nav-link d-flex align-items-center" [ngClass]="{ 'active': activeNavItem === 2 }"
-              (click)="setActiveNavItem(2)" routerLink="/orders">
+               (click)="onCartClick($event)" routerLink="/orders">
               <i class="fas fa-shopping-cart me-1"></i>
               Giỏ hàng
             </a>
@@ -83,3 +91,5 @@
     </div>
   </nav>
 </header>
+
+<app-confirm-logout-modal *ngIf="showLogoutModal" (confirm)="onLogoutConfirm()" (cancel)="onLogoutCancel()"></app-confirm-logout-modal>

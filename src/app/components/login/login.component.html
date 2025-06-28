@@ -19,6 +19,7 @@
           [(ngModel)]="phoneNumber"
           required
           placeholder="Nhập số điện thoại"
+          (keydown.enter)="login()"
         />
       </div>
 
@@ -31,10 +32,11 @@
             id="password"
             name="password"
             [(ngModel)]="password"
-            placeholder="Ít nhất 3 ký tự"
+            placeholder="Nhập mật khẩu "
             class="form-control"
             required
             minlength="3"
+            (keydown.enter)="login()"
           />
           <i
             class="password-toggle fas"
@@ -55,7 +57,7 @@
           />
           Ghi nhớ đăng nhập
         </label>
-        <a class="register-link" href="#">Quên mật khẩu</a>
+        <a class="register-link" href="#" (click)="onForgotPasswordClick(); $event.preventDefault()">Quên mật khẩu</a>
       </div>
 
       <!-- Nút đăng nhập -->
@@ -88,3 +90,5 @@
     </div>
   </form>
 </div>
+
+<app-forgot-password-modal *ngIf="showForgotPasswordModal" (submit)="onForgotPasswordSubmit($event)" (cancel)="onForgotPasswordCancel()"></app-forgot-password-modal>

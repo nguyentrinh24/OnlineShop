@@ -12,6 +12,7 @@ import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ForgotPasswordModalComponent } from './forgot-password-modal.component';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,8 @@ import { FormsModule } from '@angular/forms';
     FooterComponent,
     HeaderComponent,
     CommonModule,
-    FormsModule
+    FormsModule,
+    ForgotPasswordModalComponent
   ]
 })
 export class LoginComponent implements OnInit {
@@ -34,6 +36,7 @@ export class LoginComponent implements OnInit {
   rememberMe: boolean = true;
   userResponse?: UserResponse;
   isLoading: boolean = false;
+  showForgotPasswordModal = false;
 
   onPhoneNumberChange() {
     console.log(`Phone typed: ${this.phoneNumber}`);
@@ -136,5 +139,19 @@ export class LoginComponent implements OnInit {
   closeLoginPopup() {
     // Nếu dùng biến hiển thị popup, set biến đó về false. Nếu không, tạm thời điều hướng về trang chủ.
     this.router.navigate(['/']);
+  }
+
+  onForgotPasswordClick() {
+    this.showForgotPasswordModal = true;
+  }
+
+  onForgotPasswordSubmit(value: string) {
+    // TODO: call API to handle forgot password
+    alert('Yêu cầu lấy lại mật khẩu đã được gửi cho: ' + value);
+    this.showForgotPasswordModal = false;
+  }
+
+  onForgotPasswordCancel() {
+    this.showForgotPasswordModal = false;
   }
 }
