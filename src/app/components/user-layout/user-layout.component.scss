@@ -23,6 +23,22 @@ app-sidebar {
   background: #fff;
   min-height: 100vh;
   overflow-y: auto;
+  transition: all 0.3s ease;
+
+  &.full-width {
+    flex: 1;
+    margin-left: 0;
+    padding: 20px;
+    
+    // Khi không có sidebar, tăng padding để tận dụng không gian
+    @media (min-width: 1200px) {
+      padding: 40px 60px;
+    }
+    
+    @media (min-width: 768px) and (max-width: 1199px) {
+      padding: 30px 40px;
+    }
+  }
 }
 
 app-header {
@@ -53,5 +69,9 @@ app-footer {
   .main-content {
     order: 1;
     padding: 16px 4px;
+    
+    &.full-width {
+      padding: 16px 8px;
+    }
   }
 } 

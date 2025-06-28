@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { OnInit } from '@angular/core';
 import { InsertProductDTO } from '../../../../dtos/product/insert.product.dto';
 import { Category } from '../../../../models/category';
@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
   ]
 })
 export class InsertProductAdminComponent implements OnInit {

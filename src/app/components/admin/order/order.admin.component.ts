@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
   ]
 })
 export class OrderAdminComponent implements OnInit {

@@ -93,6 +93,11 @@ export class LoginComponent implements OnInit {
               } else if (this.userResponse?.role.id === 2) {
                 this.router.navigate(['']); // role_id 2 = user
               }
+              // Force a small delay to ensure state is updated before navigation
+              setTimeout(() => {
+                this.cartService.refreshCart();
+                this.isLoading = false;
+              }, 100);
             },
             complete: () => {
               this.cartService.refreshCart();

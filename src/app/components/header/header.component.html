@@ -17,8 +17,6 @@
         <input type="text" class="form-control search-input" placeholder="Tìm sản phẩm" [(ngModel)]="keyword">
       </div>
 
-      
-
       <!-- Nút toggle menu cho mobile -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,9 +30,23 @@
             <a class="nav-link" [ngClass]="{ 'active': activeNavItem === 0 }" (click)="setActiveNavItem(0)"
               routerLink="/">Trang chủ</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" [ngClass]="{ 'active': activeNavItem === 1 }" (click)="setActiveNavItem(1)"
-              routerLink="/">Thông báo</a>
+          <li class="nav-item position-relative">
+            <a class="nav-link d-flex align-items-center" [ngClass]="{ 'active': activeNavItem === 1 }"
+              (click)="toggleNotificationDropdown($event); setActiveNavItem(1)" style="cursor:pointer;">
+              <i class="fas fa-bell me-1"></i>
+              Thông báo
+              <span *ngIf="unreadCount > 0" class="badge bg-danger position-absolute top-0 start-100 translate-middle p-1 rounded-circle" style="font-size: 10px;">{{ unreadCount }}</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end show" *ngIf="notificationDropdownOpen" style="min-width: 320px; max-width: 350px; max-height: 400px; overflow-y: auto; right:0; left:auto;">
+              <div *ngIf="notifications.length === 0" class="dropdown-item text-muted">Không có thông báo</div>
+              <div *ngFor="let n of notifications" class="dropdown-item" [ngClass]="n.type">
+                <span>{{ n.message }}</span>
+                <small class="text-muted d-block">{{ n.createdAt | date:'short' }}</small>
+              </div>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" (click)="markAllAsRead()">Đánh dấu đã đọc</button>
+              <button class="dropdown-item text-danger" (click)="clearAllNotifications()">Xóa tất cả</button>
+            </div>
           </li>
           <li class="nav-item">
             <a class="nav-link d-flex align-items-center" [ngClass]="{ 'active': activeNavItem === 2 }"
@@ -54,8 +66,10 @@
                 <ng-template #popoverContent>
                   <div class="popover-list">
                     <a class="popover-item" (click)="handleItemClick(0)">Tài khoản của tôi</a>
-                    <a class="popover-item" (click)="handleItemClick(1)">Đơn mua</a>
-                    <a class="popover-item" (click)="handleItemClick(2)">Đăng xuất</a>
+                    <a class="popover-item d-flex align-items-center" (click)="handleItemClick(2)">
+                      <i class="fas fa-sign-out-alt me-1"></i>
+                      Đăng xuất
+                    </a>
                   </div>
                 </ng-template>
               </ng-container>

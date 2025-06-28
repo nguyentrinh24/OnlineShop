@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.isBrowser) {
       this.currentPage = Number(this.localStorage?.getItem('currentProductPage')) || 0;
     }

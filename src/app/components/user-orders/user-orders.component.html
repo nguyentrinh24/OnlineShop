@@ -1,0 +1,202 @@
+<div class="user-orders-container">
+  <div class="container">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3">
+        <div class="profile-sidebar">
+          <div class="user-info">
+            <div class="user-avatar">
+              <span class="avatar-icon">👤</span>
+            </div>
+            <h5>{{ userResponse?.fullname || 'User' }}</h5>
+            <p class="text-muted">Thành viên</p>
+          </div>
+          
+          <div class="profile-menu">
+            <a class="menu-item active">
+              <span class="menu-icon">🛒</span>
+              Đơn mua
+            </a>
+            <a class="menu-item" (click)="handleItemClick(2)">
+              <span class="menu-icon">👤</span>
+              Thông tin cá nhân
+            </a>
+            <a class="menu-item" (click)="handleItemClick(3)">
+              <span class="menu-icon">🚪</span>
+              Đăng xuất
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="col-md-9">
+        <div class="header-section">
+          <h2>Đơn hàng của tôi</h2>
+          <div class="search-section">
+            <input 
+              type="text" 
+              [(ngModel)]="keyword" 
+              placeholder="Tìm kiếm đơn hàng..."
+              class="search-input"
+              (keyup.enter)="searchOrders()"
+            >
+            <button class="btn btn-primary" (click)="searchOrders()">
+              <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter buttons -->
+        <div class="filter-section">
+          <div class="btn-group" role="group">
+            <button 
+              type="button" 
+              class="btn" 
+              [class.btn-primary]="selectedStatus === 'all'"
+              [class.btn-outline-primary]="selectedStatus !== 'all'"
+              (click)="filterByStatus('all')"
+            >
+              Tất cả
+            </button>
+            <button 
+              type="button" 
+              class="btn" 
+              [class.btn-primary]="selectedStatus === 'pending'"
+              [class.btn-outline-primary]="selectedStatus !== 'pending'"
+              (click)="filterByStatus('pending')"
+            >
+              Chờ xử lý
+            </button>
+            <button 
+              type="button" 
+              class="btn" 
+              [class.btn-primary]="selectedStatus === 'processing'"
+              [class.btn-outline-primary]="selectedStatus !== 'processing'"
+              (click)="filterByStatus('processing')"
+            >
+              Đang xử lý
+            </button>
+            <button 
+              type="button" 
+              class="btn" 
+              [class.btn-primary]="selectedStatus === 'shipped'"
+              [class.btn-outline-primary]="selectedStatus !== 'shipped'"
+              (click)="filterByStatus('shipped')"
+            >
+              Đang giao
+            </button>
+            <button 
+              type="button" 
+              class="btn" 
+              [class.btn-primary]="selectedStatus === 'delivered'"
+              [class.btn-outline-primary]="selectedStatus !== 'delivered'"
+              (click)="filterByStatus('delivered')"
+            >
+              Đã giao
+            </button>
+            <button 
+              type="button" 
+              class="btn" 
+              [class.btn-primary]="selectedStatus === 'cancelled'"
+              [class.btn-outline-primary]="selectedStatus !== 'cancelled'"
+              (click)="filterByStatus('cancelled')"
+            >
+              Đã hủy
+            </button>
+          </div>
+        </div>
+
+        <!-- Orders list -->
+        <div class="orders-list">
+          <div class="order-card" *ngFor="let order of getFilteredOrders()">
+            <div class="order-header">
+              <div class="order-info">
+                <h5>Đơn hàng #{{ order.id }}</h5>
+                <p class="order-date">{{ order.order_date | date:'dd/MM/yyyy HH:mm' }}</p>
+              </div>
+              <div class="order-status">
+                <span class="badge" [ngClass]="getStatusClass(order.status)">
+                  {{ getStatusText(order.status) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="order-details">
+              <div class="customer-info">
+                <p><strong>Người nhận:</strong> {{ order.fullname }}</p>
+                <p><strong>Số điện thoại:</strong> {{ order.phone_number }}</p>
+                <p><strong>Địa chỉ:</strong> {{ order.address }}</p>
+              </div>
+
+              <div class="order-summary">
+                <div class="order-items">
+                  <div class="order-item" *ngFor="let item of order.order_details">
+                    <div class="item-info">
+                      <img [src]="item.product.thumbnail" alt="Product" class="item-image">
+                      <div class="item-details">
+                        <h6>{{ item.product.name }}</h6>
+                        <p>Số lượng: {{ item.number_of_products }}</p>
+                        <p>Giá: {{ item.product.price | number:'1.0-0' }} đ</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="order-total">
+                  <h6>Tổng tiền: {{ order.total_money | number:'1.0-0' }} đ</h6>
+                  <p>Phương thức thanh toán: {{ order.payment_method === 'cod' ? 'Thanh toán khi nhận hàng' : order.payment_method }}</p>
+                  <p>Phương thức vận chuyển: {{ order.shipping_method === 'express' ? 'Nhanh' : 'Thường' }}</p>
+                </div>
+              </div>
+
+              <div class="order-actions">
+                <button 
+                  class="btn btn-outline-primary btn-sm" 
+                  (click)="viewOrderDetails(order)"
+                >
+                  Xem chi tiết
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No orders message -->
+        <div class="no-orders" *ngIf="getFilteredOrders().length === 0">
+          <div class="text-center">
+            <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+            <h5>Không có đơn hàng nào</h5>
+            <p class="text-muted">Bạn chưa có đơn hàng nào trong trạng thái này.</p>
+            <a href="/" class="btn btn-primary">Mua sắm ngay</a>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="totalPages > 1">
+          <nav aria-label="Orders pagination">
+            <ul class="pagination justify-content-center">
+              <li class="page-item" [class.disabled]="currentPage === 0">
+                <a class="page-link" (click)="onPageChange(currentPage - 1)" style="cursor: pointer;">
+                  Trước
+                </a>
+              </li>
+              
+              <li class="page-item" *ngFor="let page of visiblePages" [class.active]="page === currentPage + 1">
+                <a class="page-link" (click)="onPageChange(page - 1)" style="cursor: pointer;">
+                  {{ page }}
+                </a>
+              </li>
+              
+              <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                <a class="page-link" (click)="onPageChange(currentPage + 1)" style="cursor: pointer;">
+                  Sau
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

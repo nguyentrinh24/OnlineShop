@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Category } from '../../../models/category';
 import { CategoryService } from '../../../services/category.service';
 
@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
   ]
 })
 export class CategoryAdminComponent implements OnInit {

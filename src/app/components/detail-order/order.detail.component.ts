@@ -4,7 +4,7 @@ import { CartService } from '../../services/cart.service';
 import { ProductService } from '../../services/product.service';
 import { OrderService } from '../../services/order.service';
 import { OrderDTO } from '../../dtos/order/order.dto';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { OrderResponse } from '../../responses/order/order.response';
 import { environment } from '../../../environments/environment';
 import { OrderDetail } from '../../models/order.detail';
@@ -27,7 +27,7 @@ import { CommonModule } from '@angular/common';
 })
 export class OrderDetailComponent implements OnInit {
   orderResponse: OrderResponse = {
-    id: 0, // Hoặc bất kỳ giá trị số nào bạn muốn
+    id: 0,
     user_id: 0,
     fullname: '',
     phone_number: '',
@@ -36,30 +36,28 @@ export class OrderDetailComponent implements OnInit {
     note: '',
     order_date: new Date(),
     status: '',
-    total_money: 0, // Hoặc bất kỳ giá trị số nào bạn muốn
+    total_money: 0,
     shipping_method: '',
     shipping_address: '',
     shipping_date: new Date(),
     payment_method: '',
-    order_details: [] // Một mảng rỗng
+    order_details: []
   };
+
   constructor(
     private orderService: OrderService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.getOrderDetails();
-
   }
 
   getOrderDetails(): void {
-    debugger
     const orderId = Number(this.route.snapshot.paramMap.get('id'));
     this.orderService.getOrderById(orderId).subscribe({
       next: (response: any) => {
-        // Gán lại cho latestOrderId tại đây
-        debugger
         this.orderService.latestOrderId = response.id;
 
         this.orderResponse.id = response.id;
@@ -90,17 +88,50 @@ export class OrderDetailComponent implements OnInit {
         this.orderResponse.shipping_method = response.shipping_method;
         this.orderResponse.status = response.status;
         this.orderResponse.total_money = response.total_money;
-
-
-      },
-      complete: () => {
-        //debugger;        
       },
       error: (error: any) => {
-        //debugger;
         console.error('Error fetching detail:', error);
       }
     });
+  }
+
+  // Helper methods for display text
+  getStatusText(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'pending': 'Chờ xử lý',
+      'processing': 'Đang xử lý',
+      'shipped': 'Đang giao',
+      'delivered': 'Đã giao',
+      'cancelled': 'Đã hủy'
+    };
+    return statusMap[status] || status;
+  }
+
+  getShippingMethodText(method: string): string {
+    const methodMap: { [key: string]: string } = {
+      'express': 'Giao hàng nhanh',
+      'standard': 'Giao hàng tiêu chuẩn'
+    };
+    return methodMap[method] || method;
+  }
+
+  getPaymentMethodText(method: string): string {
+    const methodMap: { [key: string]: string } = {
+      'cod': 'Thanh toán khi nhận hàng',
+      'banking': 'Chuyển khoản ngân hàng',
+      'momo': 'Ví MoMo',
+      'vnpay': 'VNPay'
+    };
+    return methodMap[method] || method;
+  }
+
+  // Navigation methods
+  goBack(): void {
+    this.router.navigate(['/user-orders']);
+  }
+
+  printOrder(): void {
+    window.print();
   }
 }
 

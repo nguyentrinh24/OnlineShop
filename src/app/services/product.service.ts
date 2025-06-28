@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Product } from '../models/product';
 import { UpdateProductDTO } from '../dtos/product/update.product.dto';
 import { InsertProductDTO } from '../dtos/product/insert.product.dto';
+import { HttpUtilService } from './http.util.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,10 @@ import { InsertProductDTO } from '../dtos/product/insert.product.dto';
 export class ProductService {
   private apiBaseUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private httpUtilService: HttpUtilService
+  ) { }
 
   getProducts(
     keyword: string,
@@ -28,6 +32,7 @@ export class ProductService {
       limit: limit.toString()
     };
     
+    // Products endpoint is public, no need for Authorization header
     return this.http.get<any>(`${this.apiBaseUrl}/products`, { params })
       .pipe(
         timeout(10000),
@@ -39,6 +44,7 @@ export class ProductService {
   }
 
   getDetailProduct(productId: number): Observable<Product> {
+    // Product detail endpoint is public, no need for Authorization header
     return this.http.get<Product>(`${this.apiBaseUrl}/products/${productId}`)
       .pipe(
         timeout(10000),
@@ -51,6 +57,7 @@ export class ProductService {
 
   getProductsByIds(productIds: number[]): Observable<Product[]> {
     const params = new HttpParams().set('ids', productIds.join(','));
+    // Products by IDs endpoint is public, no need for Authorization header
     return this.http.get<Product[]>(`${this.apiBaseUrl}/products/by-ids`, { params })
       .pipe(
         timeout(10000),
@@ -62,7 +69,9 @@ export class ProductService {
   }
   
   deleteProduct(productId: number): Observable<string> {
-    return this.http.delete<string>(`${this.apiBaseUrl}/products/${productId}`)
+    return this.http.delete<string>(`${this.apiBaseUrl}/products/${productId}`, {
+      headers: this.httpUtilService.createHeaders()
+    })
       .pipe(
         timeout(10000),
         catchError(error => {
@@ -73,7 +82,9 @@ export class ProductService {
   }
   
   updateProduct(productId: number, updatedProduct: UpdateProductDTO): Observable<UpdateProductDTO> {
-    return this.http.put<Product>(`${this.apiBaseUrl}/products/${productId}`, updatedProduct)
+    return this.http.put<Product>(`${this.apiBaseUrl}/products/${productId}`, updatedProduct, {
+      headers: this.httpUtilService.createHeaders()
+    })
       .pipe(
         timeout(10000),
         catchError(error => {
@@ -84,7 +95,9 @@ export class ProductService {
   }
   
   insertProduct(insertProductDTO: InsertProductDTO): Observable<any> {
-    return this.http.post(`${this.apiBaseUrl}/products`, insertProductDTO)
+    return this.http.post(`${this.apiBaseUrl}/products`, insertProductDTO, {
+      headers: this.httpUtilService.createHeaders()
+    })
       .pipe(
         timeout(10000),
         catchError(error => {
@@ -99,7 +112,17 @@ export class ProductService {
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i]);
     }
-    return this.http.post(`${this.apiBaseUrl}/products/uploads/${productId}`, formData)
+    
+    // For file upload, we need different headers
+    let token = '';
+    if (typeof window !== 'undefined' && window.localStorage) {
+      token = localStorage.getItem('access-token') || '';
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.post(`${this.apiBaseUrl}/products/uploads/${productId}`, formData, { headers })
       .pipe(
         timeout(15000),
         catchError(error => {
@@ -110,7 +133,9 @@ export class ProductService {
   }
   
   deleteProductImage(id: number): Observable<any> {
-    return this.http.delete<string>(`${this.apiBaseUrl}/product_images/${id}`)
+    return this.http.delete<string>(`${this.apiBaseUrl}/product_images/${id}`, {
+      headers: this.httpUtilService.createHeaders()
+    })
       .pipe(
         timeout(10000),
         catchError(error => {
@@ -120,9 +145,9 @@ export class ProductService {
       );
   }
 
-  getFeaturedProducts(limit: number = 8): Observable<Product[]> {
-    const params = new HttpParams().set('limit', limit.toString());
-    return this.http.get<Product[]>(`${this.apiBaseUrl}/products/featured`, { params })
+  getFeaturedProducts(limit: number): Observable<Product[]> {
+    // Featured products endpoint is public, no need for Authorization header
+    return this.http.get<Product[]>(`${this.apiBaseUrl}/products/featured?limit=${limit}`)
       .pipe(
         timeout(10000),
         catchError(error => {
@@ -131,5 +156,6 @@ export class ProductService {
         })
       );
   }
+
 }
 //update.category.admin.component.html

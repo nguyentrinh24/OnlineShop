@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { OnInit } from '@angular/core';
 import { InsertCategoryDTO } from '../../../../dtos/category/insert.category.dto';
 import { Category } from '../../../../models/category';
@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
   ]
 })
 export class InsertCategoryAdminComponent implements OnInit {

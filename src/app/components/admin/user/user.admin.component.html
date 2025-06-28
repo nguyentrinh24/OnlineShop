@@ -1,1 +1,105 @@
-<p>user.admin works!</p>
+<div class="user-admin-container">
+  <div class="header-section">
+    <h2>User Management</h2>
+    <div class="search-section">
+      <input 
+        type="text" 
+        [(ngModel)]="keyword" 
+        placeholder="Search users..."
+        class="search-input"
+        (keyup.enter)="searchUsers()"
+      >
+      <button class="btn btn-primary" (click)="searchUsers()">
+        <i class="fas fa-search"></i> Search
+      </button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Full Name</th>
+          <th>Address</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Date of Birth</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.fullname }}</td>
+          <td>{{ user.address }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-primary': user.role.name === 'ADMIN',
+              'badge-success': user.role.name === 'USER'
+            }">
+              {{ user.role.name || 'Unknown' }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-success': user.is_active,
+              'badge-danger': !user.is_active
+            }">
+              {{ user.is_active ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>{{ user.date_of_birth | date:'short' }}</td>
+          <td>
+            <div class="btn-group" role="group">
+              <button 
+                class="btn btn-sm btn-warning" 
+                (click)="updateUserRole(user.id, user.role.name === 'ADMIN' ? 'USER' : 'ADMIN')"
+                title="Change Role"
+              >
+                <i class="fas fa-user-edit"></i>
+              </button>
+              <button 
+                class="btn btn-sm btn-danger" 
+                (click)="deleteUser(user.id)"
+                title="Delete User"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="totalPages > 1">
+    <nav aria-label="User pagination">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 0">
+          <a class="page-link" (click)="onPageChange(currentPage - 1)" style="cursor: pointer;">
+            Previous
+          </a>
+        </li>
+        
+        <li class="page-item" *ngFor="let page of visiblePages" [class.active]="page === currentPage + 1">
+          <a class="page-link" (click)="onPageChange(page - 1)" style="cursor: pointer;">
+            {{ page }}
+          </a>
+        </li>
+        
+        <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+          <a class="page-link" (click)="onPageChange(currentPage + 1)" style="cursor: pointer;">
+            Next
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- No data message -->
+  <div class="no-data" *ngIf="users.length === 0">
+    <p>No users found.</p>
+  </div>
+</div>

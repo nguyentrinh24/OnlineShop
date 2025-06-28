@@ -1,8 +1,9 @@
 <div class="user-layout">
   <app-header></app-header>
   <div class="layout-container">
-    <app-sidebar></app-sidebar>
-    <main class="main-content">
+    <!-- Sidebar chỉ hiển thị cho các trang không phải user-orders -->
+    <app-sidebar *ngIf="!isOrdersPage()"></app-sidebar>
+    <main class="main-content" [class.full-width]="isOrdersPage()">
       <router-outlet></router-outlet>
     </main>
   </div>

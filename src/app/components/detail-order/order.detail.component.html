@@ -1,70 +1,121 @@
-<div class="container">
-    <div class="intro-section">
-        <h1>Chi tiết đơn hàng</h1>
-        <p>Xem thông tin chi tiết đơn hàng</p>
+<div class="order-detail-container">
+  <div class="container">
+    <div class="confirmation-container">
+      <!-- Order Header -->
+      <div class="order-header">
+        <h2>Chi tiết đơn hàng</h2>
+        <p>Xem thông tin chi tiết đơn hàng của bạn</p>
+      </div>
+      
+      @if(orderResponse) {
+        <!-- Order Information -->
+        <div class="order-info">
+          <div class="info-row">
+            <span class="label">Mã đơn hàng:</span>
+            <span class="value">#{{ orderResponse.id }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Ngày đặt:</span>
+            <span class="value">{{ orderResponse.order_date | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Trạng thái:</span>
+            <span class="value">
+              <span class="status-badge" [ngClass]="'status-' + orderResponse.status">
+                {{ getStatusText(orderResponse.status) }}
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="order-info">
+          <h4 style="margin-bottom: 15px; color: #333;">Thông tin người nhận</h4>
+          <div class="info-row">
+            <span class="label">Họ và tên:</span>
+            <span class="value">{{ orderResponse.fullname }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ orderResponse.email }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Số điện thoại:</span>
+            <span class="value">{{ orderResponse.phone_number }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Địa chỉ:</span>
+            <span class="value">{{ orderResponse.address }}</span>
+          </div>
+          <div class="info-row" *ngIf="orderResponse.note">
+            <span class="label">Ghi chú:</span>
+            <span class="value">{{ orderResponse.note }}</span>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="order-info">
+          <h4 style="margin-bottom: 15px; color: #333;">Sản phẩm đã đặt hàng</h4>
+          <table class="order-table">
+            <thead>
+              <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Tổng giá</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(item of orderResponse.order_details; track item.product.name) {
+                <tr>
+                  <td>
+                    <div class="product-info">
+                      <img [src]="item.product.thumbnail" alt="Product Image" class="product-image">
+                      <div class="product-details">
+                        <div class="product-name">{{ item.product.name }}</div>
+                        <div class="product-price">{{ item.price | number:'1.0-0' }} đ</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="product-quantity">{{ item.number_of_products }}</td>
+                  <td>{{ item.price | number:'1.0-0' }} đ</td>
+                  <td>{{ item.total_money | number:'1.0-0' }} đ</td>
+                </tr>
+              }
+              <tr class="total-row">
+                <td colspan="3"><strong>Tổng tiền:</strong></td>
+                <td><strong>{{ orderResponse.total_money | number:'1.0-0' }} đ</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <div class="summary-row">
+            <span class="label">Phương thức vận chuyển:</span>
+            <span class="value">{{ getShippingMethodText(orderResponse.shipping_method) }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Phương thức thanh toán:</span>
+            <span class="value">{{ getPaymentMethodText(orderResponse.payment_method) }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Tổng tiền đơn hàng:</span>
+            <span class="value">{{ orderResponse.total_money | number:'1.0-0' }} đ</span>
+          </div>
+        </div>
+
+        <!-- Order Actions -->
+        <div class="order-actions">
+          <button class="btn btn-secondary" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i> Quay lại
+          </button>
+          <button class="btn btn-primary" (click)="printOrder()">
+            <i class="fas fa-print"></i> In đơn hàng
+          </button>
+        </div>
+      }
     </div>
-    
-    <!-- Thông tin người nhận -->
-    @if(orderResponse) {
-        <div class="row">
-            <div class="col-md-6">
-                <h2 class="product-header">Thông tin người nhận</h2>
-                <div class="mb-3">
-                    <p class="form-label">Họ và tên: {{ orderResponse.fullname }}</p>
-                </div>
-                <!-- Các trường thông tin khác -->
-                <div class="mb-3">
-                    <p class="form-label">Email: {{ orderResponse.email }}</p>
-                </div>
-                <div class="mb-3">
-                    <p class="form-label">Số điện thoại: {{ orderResponse.phone_number }}</p>
-                </div>
-                <div class="mb-3">
-                    <p class="form-label">Địa chỉ: {{ orderResponse.address }}</p>
-                </div>
-                <div class="mb-3">
-                    <p class="form-label">Ghi chú: {{ orderResponse.note }}</p>
-                </div>
-                <div class="mb-3">
-                    <p class="form-label">Phương thức vận chuyển: {{ orderResponse.shipping_method }}</p>
-                </div>
-                <div class="mb-3">
-                    <p class="form-label">Phương thức thanh toán: {{ orderResponse.payment_method }}</p>
-                </div>                        
-            </div>
-    
-            <!-- Sản phẩm đã đặt hàng -->
-            <div class="col-md-6">
-                <h2 class="product-order">Sản phẩm đã đặt hàng</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th scope="col" class="text-start">Sản phẩm</th>
-                            <th scope="col">Số lượng</th>
-                            <th scope="col">Đơn giá</th>
-                            <th scope="col">Tổng giá</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for(item of orderResponse.order_details; track item.product.name) {
-                            <tr>
-                                <td>
-                                    <div class="product-info">
-                                        <img [src]="item.product.thumbnail" alt="Product Image" class="product-image">
-                                        <span class="product-name">{{ item.product.name }}</span>
-                                    </div>
-                                </td>
-                                <td>{{ item.number_of_products }}</td>
-                                <td>{{ item.price | number:'1.2-2' }}</td>
-                                <td>{{ item.total_money | number:'1.2-2' }}</td>
-                            </tr>
-                        }                        
-                    </tbody>
-                </table>
-                <div class="text-start mt-3">
-                    <h4 class="header-text text-end">Tổng giá: {{ orderResponse.total_money | number:'1.2-2' }}</h4>
-                </div>            
-            </div>
-        </div>    
-    }    
+  </div>
 </div>

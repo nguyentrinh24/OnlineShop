@@ -6,6 +6,8 @@ import { environment } from '../../environments/environment';
 import { OrderDTO } from '../dtos/order/order.dto';
 import { OrderResponse } from '../responses/order/order.response';
 import { Order } from '../models/order';
+import { HttpUtilService } from './http.util.service';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +16,12 @@ export class OrderService {
   private apiUrl = `${environment.apiBaseUrl}/orders`;
   private apiGetAllOrders = `${environment.apiBaseUrl}/orders/get-orders-by-keyword`;
   public latestOrderId: number | null = null;
-  constructor(private http: HttpClient) {
+  
+  constructor(
+    private http: HttpClient,
+    private httpUtilService: HttpUtilService,
+    private tokenService: TokenService
+  ) {
     // Khôi phục từ localStorage nếu có (chỉ trên browser)
     if (typeof window !== 'undefined' && window.localStorage) {
       const saved = localStorage.getItem('latestOrderId');
@@ -32,10 +39,12 @@ export class OrderService {
       })
     );
   }
+  
   getOrderById(orderId: number): Observable<any> {
     const url = `${environment.apiBaseUrl}/orders/${orderId}`;
     return this.http.get(url);
   }
+  
   getAllOrders(keyword: string,
     page: number, limit: number
   ): Observable<OrderResponse[]> {
@@ -45,14 +54,30 @@ export class OrderService {
       .set('limit', limit.toString());
     return this.http.get<any>(this.apiGetAllOrders, { params });
   }
+  
+  getUserOrders(keyword: string, page: number, limit: number): Observable<any> {
+    const userId = this.tokenService.getUserId();
+    const params = new HttpParams()
+      .set('keyword', keyword)
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+    
+    return this.http.get<any>(`${this.apiUrl}/user/${userId}/orders`, { 
+      params: params,
+      headers: this.httpUtilService.createHeaders()
+    });
+  }
+  
   updateOrder(orderId: number, orderData: OrderDTO): Observable<Object> {
     const url = `${environment.apiBaseUrl}/orders/${orderId}`;
     return this.http.put(url, orderData);
   }
+  
   deleteOrder(orderId: number): Observable<any> {
     const url = `${environment.apiBaseUrl}/orders/${orderId}`;
     return this.http.delete(url, { responseType: 'text' });
   }
+  
   getLatestOrder(): Observable<Order> {
     let token = '';
     if (typeof window !== 'undefined' && window.localStorage) {

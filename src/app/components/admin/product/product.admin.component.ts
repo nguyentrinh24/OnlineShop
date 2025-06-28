@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 
 import { Location } from '@angular/common';
@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
   ]
 })
 export class ProductAdminComponent implements OnInit {

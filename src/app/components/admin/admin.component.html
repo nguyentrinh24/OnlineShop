@@ -1,18 +1,18 @@
 <div class="admin-dashboard">
   <div class="dashboard-stats">
-    <div class="stat-card">
+    <div class="stat-card" (click)="showAdminComponent('orders')" style="cursor: pointer;">
       <h3>Total Orders</h3>
       <p class="stat-number">{{ totalOrders }}</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="showAdminComponent('products')" style="cursor: pointer;">
       <h3>Total Products</h3>
       <p class="stat-number">{{ totalProducts }}</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="showAdminComponent('users')" style="cursor: pointer;">
       <h3>Total Users</h3>
       <p class="stat-number">{{ totalUsers }}</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" (click)="showAdminComponent('categories')" style="cursor: pointer;">
       <h3>Total Categories</h3>
       <p class="stat-number">{{ totalCategories }}</p>
     </div>
@@ -23,6 +23,7 @@
     <div class="activity-list">
       <p>Welcome to Admin Dashboard</p>
       <p>Use the sidebar navigation to manage your store.</p>
+      <p>Click on the stat cards above to navigate to their respective management pages.</p>
     </div>
   </div>
 </div>

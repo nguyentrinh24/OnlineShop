@@ -14,8 +14,6 @@ import { TokenService } from '../../services/token.service';
 import { UserResponse } from '../../responses/user/user.response';
 import { UpdateUserDTO } from '../../dtos/user/update.user.dto';
 
-import { HeaderComponent } from '../header/header.component';
-import { FooterComponent } from '../footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -26,8 +24,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrls: ['./user.profile.component.scss'],
   standalone: true,
   imports: [
-    FooterComponent,
-    HeaderComponent,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -55,11 +51,8 @@ export class UserProfileComponent implements OnInit {
       validators: this.passwordMatchValidator// Custom validator function for password match
     });
   }
+  
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  nngOnInit(): void {
     this.token = this.tokenService.getToken();
 
     if (!this.token) {
@@ -90,6 +83,27 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  handleItemClick(itemId: number): void {
+    switch (itemId) {
+      case 1: // Đơn mua
+        this.router.navigate(['/user-orders']);
+        break;
+      case 2: // Thông tin cá nhân
+        // Đã ở trang user-profile rồi
+        break;
+      case 3: // Đăng xuất
+        this.logout();
+        break;
+      default:
+        break;
+    }
+  }
+
+  logout(): void {
+    this.userService.removeUserFromLocalStorage();
+    this.tokenService.removeToken();
+    this.router.navigate(['/login']);
+  }
 
   passwordMatchValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
@@ -102,6 +116,7 @@ export class UserProfileComponent implements OnInit {
       return null;
     };
   }
+  
   save(): void {
     if (!this.token) {
       alert('Không tìm thấy token. Vui lòng đăng nhập lại.');
@@ -121,6 +136,7 @@ export class UserProfileComponent implements OnInit {
       this.userService.updateUserDetail(this.token, updateUserDTO)
         .subscribe({
           next: (response: any) => {
+            alert('Cập nhật thông tin thành công!');
             this.userService.removeUserFromLocalStorage();
             this.tokenService.removeToken();
             this.router.navigate(['/login']);
@@ -135,6 +151,5 @@ export class UserProfileComponent implements OnInit {
       }
     }
   }
-
 }
 

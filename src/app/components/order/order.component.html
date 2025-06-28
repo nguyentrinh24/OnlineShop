@@ -1,10 +1,7 @@
-<app-header></app-header>
+<div class="order-page-container">
 <div class="container">
-    <div class="intro-section">
-        <h1>Đây là trang Order</h1>
-        <p>Sử dụng Bootstrap</p>
-    </div> 
-    <form [formGroup]="orderForm"> <!-- Thêm form và gán formGroup -->   
+    
+    <form [formGroup]="orderForm"> 
     <div class="row">
         <div class="col-md-5">
             <h2 class="product-header">Thông tin người nhận</h2>
@@ -14,6 +11,7 @@
                         formControlName="fullname" 
                         class="form-control" 
                         id="fullname" 
+                        placeholder="Họ và tên"
                         [class.is-invalid]="orderForm.get('fullname')!.invalid && orderForm.get('fullname')!.touched">
                     @if(orderForm.get('fullname')!.invalid &&
                         orderForm.get('fullname')!.touched) {
@@ -25,6 +23,7 @@
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="text" 
+                        placeholder=" Nhập email"
                         formControlName="email" 
                         class="form-control" 
                         id="email" 
@@ -159,4 +158,5 @@
         </div>
     </div>   
 </form> 
+</div>
 </div>
