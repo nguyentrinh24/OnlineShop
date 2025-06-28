@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Product } from '../../models/product';
 import { Category } from '../../models/category';
 import { Router } from '@angular/router';
@@ -6,7 +6,8 @@ import { environment } from '../../../environments/environment';
 import { CategoryService } from '../../services/category.service';
 import { ProductService } from '../../services/product.service';
 import { TokenService } from '../../services/token.service';
-
+import { isPlatformBrowser } from '@angular/common';
+import { BannerComponent } from '../banner/banner.component';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CommonModule, DOCUMENT } from '@angular/common';
@@ -21,45 +22,56 @@ import { FormsModule } from '@angular/forms';
     FooterComponent,
     HeaderComponent,
     CommonModule,
-    FormsModule
+    FormsModule,
+    BannerComponent
   ]
 })
 export class HomeComponent implements OnInit {
   products: Product[] = [];
-  categories: Category[] = []; // Dữ liệu động từ categoryService
-  selectedCategoryId: number = 0; // Giá trị category được chọn
+  featuredProducts: Product[] = [];
+  categories: Category[] = [];
+  selectedCategoryId: number = 0;
   currentPage: number = 0;
   itemsPerPage: number = 12;
-  pages: number[] = [];
   totalPages: number = 0;
   visiblePages: number[] = [];
   keyword: string = "";
   localStorage?: Storage;
+  isLoading: boolean = true;
+  isBrowser: boolean = false;
 
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
     private router: Router,
     private tokenService: TokenService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    this.localStorage = document.defaultView?.localStorage;
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    if (this.isBrowser) {
+      this.localStorage = document.defaultView?.localStorage;
+    }
   }
 
   ngOnInit() {
-    this.currentPage = Number(this.localStorage?.getItem('currentProductPage')) || 0;
-    this.getProducts(this.keyword, this.selectedCategoryId, this.currentPage, this.itemsPerPage);
-    this.getCategories(0, 100);
+    if (this.isBrowser) {
+      this.currentPage = Number(this.localStorage?.getItem('currentProductPage')) || 0;
+    }
+    this.loadData();
   }
 
-  getCategories(page: number, limit: number) {
-    this.categoryService.getCategories(page, limit).subscribe({
+  loadData() {
+    this.isLoading = true;
+    this.loadProducts();
+    this.loadCategories();
+    this.loadFeaturedProducts();
+  }
+
+  loadCategories() {
+    this.categoryService.getCategories(0, 100).subscribe({
       next: (categories: Category[]) => {
-        //debugger;
         this.categories = categories;
-      },
-      complete: () => {
-        //debugger;
       },
       error: (error: any) => {
         console.error('Error fetching categories:', error);
@@ -69,41 +81,40 @@ export class HomeComponent implements OnInit {
 
   searchProducts() {
     this.currentPage = 0;
-    this.itemsPerPage = 12;
-    //debugger;
-    this.getProducts(this.keyword, this.selectedCategoryId, this.currentPage, this.itemsPerPage);
+    this.loadProducts();
   }
 
-  getProducts(keyword: string, selectedCategoryId: number, page: number, limit: number) {
-    //debugger;
-    this.productService.getProducts(keyword, selectedCategoryId, page, limit).subscribe({
+  loadProducts() {
+    this.productService.getProducts(this.keyword, this.selectedCategoryId, this.currentPage, this.itemsPerPage).subscribe({
       next: (response: any) => {
-        //debugger;
-        response.products.forEach((product: Product) => {
-          product.url = `${environment.apiBaseUrl}/products/images/${product.thumbnail}`;
-        });
-        this.products = response.products;
-        this.totalPages = response.totalPages;
-        this.visiblePages = this.generateVisiblePageArray(this.currentPage, this.totalPages);
-      },
-      complete: () => {
-        //debugger;
+        if (response && response.products) {
+          response.products.forEach((product: Product) => {
+            product.url = `${environment.apiBaseUrl}/products/images/${product.thumbnail}`;
+          });
+          this.products = response.products;
+          this.totalPages = response.totalPages || 1;
+          this.visiblePages = this.generateVisiblePageArray(this.currentPage, this.totalPages);
+        }
+        this.isLoading = false;
       },
       error: (error: any) => {
-        //debugger;
         console.error('Error fetching products:', error);
+        this.isLoading = false;
       }
     });
   }
 
   onPageChange(page: number) {
-    //debugger;
     this.currentPage = page < 0 ? 0 : page;
-    this.localStorage?.setItem('currentProductPage', String(this.currentPage));
-    this.getProducts(this.keyword, this.selectedCategoryId, this.currentPage, this.itemsPerPage);
+    if (this.isBrowser && this.localStorage) {
+      this.localStorage.setItem('currentProductPage', String(this.currentPage));
+    }
+    this.loadProducts();
   }
 
   generateVisiblePageArray(currentPage: number, totalPages: number): number[] {
+    if (totalPages <= 0) return [1];
+    
     const maxVisiblePages = 5;
     const halfVisiblePages = Math.floor(maxVisiblePages / 2);
 
@@ -118,12 +129,52 @@ export class HomeComponent implements OnInit {
       .map((_, index) => startPage + index);
   }
 
-  // Hàm xử lý sự kiện khi sản phẩm được bấm vào
   onProductClick(productId: number) {
-    //debugger;
-    // Điều hướng đến trang detail-product với productId là tham số
     this.router.navigate(['/products', productId]);
   }
 
+  onCategoryClick(categoryId: number) {
+    this.selectedCategoryId = categoryId;
+    this.currentPage = 0;
+    this.loadProducts();
+  }
 
+  onImageError(event: any) {
+    event.target.src = 'https://www.geeksforgeeks.org/blogs/error-404-not-found/';
+  }
+
+  onImageLoad(event: any) {
+    // Handle image load success
+  }
+
+  getHoverImage(product: Product): string {
+    if (product.product_images && product.product_images.length > 1) {
+      return `${environment.apiBaseUrl}/products/images/${product.product_images[1].image_url}`;
+    }
+    return product.url;
+  }
+  
+  trackByProductId(index: number, product: any): number {
+    return product.id;
+  }
+  
+  trackByCategoryId(index: number, category: any): number {
+    return category.id;
+  }
+  
+  loadFeaturedProducts() {
+    this.productService.getFeaturedProducts(8).subscribe({
+      next: (response: any) => {
+        if (response && Array.isArray(response)) {
+          response.forEach((product: Product) => {
+            product.url = `${environment.apiBaseUrl}/products/images/${product.thumbnail}`;
+          });
+          this.featuredProducts = response;
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching featured products:', error);
+      }
+    });
+  }
 }

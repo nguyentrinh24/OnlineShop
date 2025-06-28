@@ -58,21 +58,23 @@
         <a class="register-link" href="#">Quên mật khẩu</a>
       </div>
 
-      <!-- Quyền đăng nhập -->
-      <div class="form-group">
-        <select
-          class="form-control access-right"
-          [(ngModel)]="selectedRole"
-          name="selectedRole"
-          required
-        >
-          <option selected disabled>Quyền đăng nhập</option>
-          <option *ngFor="let role of roles" [ngValue]="role">{{ role.name }}</option>
-        </select>
-      </div>
-
       <!-- Nút đăng nhập -->
       <button type="submit" class="login-button">Đăng nhập</button>
+
+      <div class="divider"></div>
+
+      <!-- Button đăng nhập bằng Google -->
+      <button type="button" class="google-login-button">
+        <img
+          src="https://developers.google.com/identity/images/g-logo.png"
+          alt="Google logo"
+          width="20"
+          height="20"
+        />
+        Đăng nhập bằng Google
+      </button>
+      
+      
 
       <div class="divider"></div>
 

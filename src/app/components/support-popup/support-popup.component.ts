@@ -19,7 +19,7 @@ export class SupportPopupComponent {
   }
 
   openMessenger() {
-    window.open('https://m.me/yourfanpageid', '_blank');
+    window.open('https://www.facebook.com/messages/e2ee/t/9789374917761747', '_blank');
     this.closePopup();
   }
   openZalo() {

@@ -12,6 +12,7 @@ import { importProvidersFrom } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { adminRoutes } from './components/admin/admin-routes';
 import { RouterModule } from '@angular/router';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 const tokenInterceptorProvider: Provider =
   { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true };
@@ -27,5 +28,6 @@ export const appConfig: ApplicationConfig = {
     tokenInterceptorProvider,
     provideClientHydration(),
     importProvidersFrom(HttpClientModule),
+    provideAnimations(),
   ]
 };
