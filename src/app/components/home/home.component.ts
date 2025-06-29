@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { Product } from '../../models/product';
 import { Category } from '../../models/category';
 import { Router } from '@angular/router';
@@ -6,12 +6,14 @@ import { environment } from '../../../environments/environment';
 import { CategoryService } from '../../services/category.service';
 import { ProductService } from '../../services/product.service';
 import { TokenService } from '../../services/token.service';
+import { FilterService } from '../../services/filter.service';
 import { isPlatformBrowser } from '@angular/common';
 import { BannerComponent } from '../banner/banner.component';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +28,7 @@ import { FormsModule } from '@angular/forms';
     BannerComponent
   ]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   featuredProducts: Product[] = [];
   categories: Category[] = [];
@@ -39,12 +41,14 @@ export class HomeComponent implements OnInit {
   localStorage?: Storage;
   isLoading: boolean = true;
   isBrowser: boolean = false;
+  private filterSubscription?: Subscription;
 
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
     private router: Router,
     private tokenService: TokenService,
+    private filterService: FilterService,
     @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
@@ -58,7 +62,28 @@ export class HomeComponent implements OnInit {
     if (this.isBrowser) {
       this.currentPage = Number(this.localStorage?.getItem('currentProductPage')) || 0;
     }
+    this.subscribeToFilterChanges();
     this.loadData();
+  }
+
+  ngOnDestroy() {
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+    }
+  }
+
+  subscribeToFilterChanges() {
+    this.filterSubscription = this.filterService.filterState$.subscribe(filterState => {
+      this.selectedCategoryId = filterState.selectedCategoryId;
+      this.keyword = filterState.keyword;
+      this.currentPage = filterState.currentPage;
+      
+      if (this.isBrowser && this.localStorage) {
+        this.localStorage.setItem('currentProductPage', String(this.currentPage));
+      }
+      
+      this.loadProducts();
+    });
   }
 
   loadData() {
@@ -80,11 +105,11 @@ export class HomeComponent implements OnInit {
   }
 
   searchProducts() {
-    this.currentPage = 0;
-    this.loadProducts();
+    this.filterService.setKeywordFilter(this.keyword);
   }
 
   loadProducts() {
+    this.isLoading = true;
     this.productService.getProducts(this.keyword, this.selectedCategoryId, this.currentPage, this.itemsPerPage).subscribe({
       next: (response: any) => {
         if (response && response.products) {
@@ -105,11 +130,7 @@ export class HomeComponent implements OnInit {
   }
 
   onPageChange(page: number) {
-    this.currentPage = page < 0 ? 0 : page;
-    if (this.isBrowser && this.localStorage) {
-      this.localStorage.setItem('currentProductPage', String(this.currentPage));
-    }
-    this.loadProducts();
+    this.filterService.setPage(page < 0 ? 0 : page);
   }
 
   generateVisiblePageArray(currentPage: number, totalPages: number): number[] {
@@ -134,9 +155,7 @@ export class HomeComponent implements OnInit {
   }
 
   onCategoryClick(categoryId: number) {
-    this.selectedCategoryId = categoryId;
-    this.currentPage = 0;
-    this.loadProducts();
+    this.filterService.setCategoryFilter(categoryId);
   }
 
   onImageError(event: any) {

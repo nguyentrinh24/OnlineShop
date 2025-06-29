@@ -3,27 +3,37 @@
 header {
     background-color: $shopapp-header-footer-bg !important;
     color: $shopapp-header-footer-text !important;
-  }
-  .navbar {
-    background-color: $shopapp-header-footer-bg !important;
-  }
-  .navbar .nav-link {
-    color: $shopapp-header-footer-text !important;
-  }
-  
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    height: 80px;
+    display: flex;
+    align-items: center;
+}
+
 .navbar {
     background-color: $shopapp-header-footer-bg !important;
     padding: 0.5rem 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 .navbar .container {
     background-color: transparent !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .navbar .navbar-brand {
     color: $shopapp-header-footer-text;
     font-weight: 700;
     font-size: 1.5rem;
+    flex-shrink: 0;
 }
 
 /* Header search styles */
@@ -31,22 +41,48 @@ header {
     flex: 1;
     max-width: 400px;
     margin: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .header-search .search-input {
-    width: 100%;
-    border-radius: 20px;
+    flex: 1;
+    border-radius: 20px 0 0 20px;
     border: 1px solid #ddd;
     padding: 8px 16px;
     background-color: #fff;
     color: #333;
     font-size: 14px;
+    border-right: none;
 }
 
 .header-search .search-input:focus {
     outline: none;
     border-color: $shopapp-color;
     box-shadow: 0 0 0 2px rgba(0, 153, 129, 0.2);
+}
+
+.header-search .search-btn {
+    border-radius: 0 20px 20px 0;
+    border: 1px solid $shopapp-color;
+    background-color: $shopapp-color;
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.header-search .search-btn:hover {
+    background-color: darken($shopapp-color, 10%);
+    border-color: darken($shopapp-color, 10%);
+}
+
+/* Navigation menu styles */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    margin-left: auto; // Đẩy menu sang bên phải
 }
 
 .navbar-nav .nav-link {
@@ -68,13 +104,34 @@ header {
     color: white !important;
 }
 
+/* Mobile responsive */
+@media (max-width: 991px) {
+    .navbar .container {
+        flex-wrap: wrap;
+    }
+    
+    .header-search {
+        order: 3;
+        width: 100%;
+        max-width: none;
+        margin: 10px 0 0 0;
+    }
+    
+    .navbar-nav {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+}
 
 .popover-list {
     padding: 10px;
 }
+
 .popover-body {
     padding: 0px;
 }
+
 .popover-item {
     display: block;
     margin-bottom: 5px;
@@ -110,10 +167,12 @@ header {
   border-radius: 6px;
   transition: background 0.18s, color 0.18s;
 }
+
 .dropdown-menu .dropdown-item:hover {
   background: #f5f5f5;
   color: $shopapp-color;
 }
+
 .dropdown-menu .dropdown-divider {
   margin: 4px 0;
 }

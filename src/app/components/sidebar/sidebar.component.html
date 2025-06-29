@@ -1,16 +1,15 @@
 <nav class="sidebar">
   <ul class="category-list">
     <li *ngFor="let item of categories" class="category-item">
-      <a *ngIf="item.link; else noLink" [href]="item.link" target="_blank" class="category-link">
-        <span class="icon-circle"><img [src]="item.icon" alt="icon" /></span>
-        <span class="category-name">{{ item.name }}</span>
-      </a>
-      <ng-template #noLink>
-        <span class="category-link">
-          <span class="icon-circle"><img [src]="item.icon" alt="icon" /></span>
-          <span class="category-name">{{ item.name }}</span>
+      <span class="category-link" 
+            [ngClass]="{ 'active': item.isActive }"
+            (click)="onCategoryClick(item.id)"
+            style="cursor: pointer;">
+        <span class="icon-circle">
+          <img [src]="item.icon" alt="icon" />
         </span>
-      </ng-template>
+        <span class="category-name">{{ item.name }}</span>
+      </span>
     </li>
   </ul>
 </nav> 

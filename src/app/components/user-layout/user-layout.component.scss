@@ -1,13 +1,18 @@
+@import '../../styles/shared-styles.scss';
+
 .user-layout {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden; // Ngăn cuộn toàn layout
 }
 
 .layout-container {
   display: flex;
   flex: 1;
-  min-height: calc(100vh - 120px); // Adjust based on header/footer height
+  position: relative;
+  height: calc(100vh - 80px); // Chiều cao cố định trừ header
+  overflow: hidden; // Ngăn cuộn container
 }
 
 app-sidebar {
@@ -15,14 +20,37 @@ app-sidebar {
   min-width: 280px;
   max-width: 280px;
   background: #f8f9fa;
+  position: sticky;
+  top: 0;
+  height: 100%;
+  overflow-y: auto; // Sidebar có thể cuộn riêng nếu cần
+  z-index: 100;
+  
+  // Custom scrollbar for sidebar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
 }
 
 .main-content {
-  flex: 1 1 auto;
-  padding: 32px 24px;
+  flex: 1;
   background: #fff;
-  min-height: 100vh;
-  overflow-y: auto;
+  height: 100%;
+  overflow-y: auto; // Chỉ main content được cuộn
+  position: relative;
   transition: all 0.3s ease;
 
   &.full-width {
@@ -39,39 +67,122 @@ app-sidebar {
       padding: 30px 40px;
     }
   }
+  
+  // Custom scrollbar for main content
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+}
+
+// Footer container với animation
+.footer-container {
+  position: relative;
+  width: 100%;
+  z-index: 100;
 }
 
 app-header {
   display: block;
   width: 100%;
-  z-index: 10;
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+  background: $shopapp-header-footer-bg;
+  height: 80px; // Chiều cao cố định cho header
 }
 
 app-footer {
   width: 100%;
- 
   color: #fff;
   padding: 24px 0 12px 0;
   text-align: center;
+  background: $shopapp-header-footer-bg;
+  z-index: 100;
+  margin-top: auto; // Đẩy footer xuống cuối
 }
 
-@media (max-width: 900px) {
+// Mobile layout - vẫn giữ nguyên logic mobile
+.user-layout.mobile {
+  overflow: visible; // Cho phép cuộn trên mobile
+  
   .layout-container {
     flex-direction: column;
+    height: auto;
+    overflow: visible;
   }
   
   app-sidebar {
     max-width: 100%;
     min-width: 100%;
     order: 2;
+    position: relative;
+    height: auto;
+    overflow: visible;
   }
   
   .main-content {
     order: 1;
     padding: 16px 4px;
+    height: auto;
+    overflow: visible;
     
     &.full-width {
       padding: 16px 8px;
     }
+  }
+  
+  app-header {
+    position: relative;
+    height: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .user-layout {
+    overflow: visible; // Cho phép cuộn trên mobile
+  }
+  
+  .layout-container {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+  
+  app-sidebar {
+    max-width: 100%;
+    min-width: 100%;
+    order: 2;
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+  
+  .main-content {
+    order: 1;
+    padding: 16px 4px;
+    height: auto;
+    overflow: visible;
+    
+    &.full-width {
+      padding: 16px 8px;
+    }
+  }
+  
+  app-header {
+    position: relative;
+    height: auto;
   }
 } 

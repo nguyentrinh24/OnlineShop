@@ -428,3 +428,231 @@
     height: 200px;
   }
 }
+
+// Main Content Layout
+.main-content {
+  padding: 32px 24px;
+  
+  .products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+    
+    .section-title {
+      margin: 0;
+      font-weight: bold;
+      color: #333;
+      font-size: 1.8rem;
+    }
+    
+    .search-container {
+      flex: 1;
+      max-width: 400px;
+      
+      .input-group {
+        .search-input {
+          border-radius: 20px 0 0 20px;
+          border: 1px solid #ddd;
+          padding: 10px 16px;
+          font-size: 14px;
+          
+          &:focus {
+            outline: none;
+            border-color: $shopapp-color;
+            box-shadow: 0 0 0 2px rgba(0, 153, 129, 0.2);
+          }
+        }
+        
+        .btn {
+          border-radius: 0 20px 20px 0;
+          border: 1px solid $shopapp-color;
+          background-color: $shopapp-color;
+          color: white;
+          padding: 10px 20px;
+          
+          &:hover {
+            background-color: darken($shopapp-color, 10%);
+          }
+        }
+      }
+    }
+  }
+  
+  .loading-container {
+    text-align: center;
+    padding: 50px 0;
+    
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
+    
+    p {
+      color: #666;
+      margin-top: 15px;
+    }
+  }
+  
+  .no-products {
+    padding: 50px 0;
+    
+    .fa-search {
+      color: #ccc;
+    }
+    
+    h4 {
+      margin-bottom: 10px;
+    }
+  }
+  
+  .pagination-container {
+    margin-top: 40px;
+    padding-bottom: 20px;
+  }
+}
+
+// Products Grid
+.products-grid {
+  .product-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      
+      .product-image-hover {
+        opacity: 1;
+      }
+      
+      .product-overlay {
+        opacity: 1;
+      }
+    }
+    
+    .product-image-container {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      
+      .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.3s ease;
+      }
+      
+      .product-image-hover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      
+      .product-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        
+        .btn {
+          background-color: $shopapp-color;
+          border-color: $shopapp-color;
+          border-radius: 20px;
+          font-weight: 600;
+          padding: 8px 20px;
+          
+          &:hover {
+            background-color: darken($shopapp-color, 10%);
+          }
+        }
+      }
+    }
+    
+    .product-info {
+      padding: 16px;
+      
+      .product-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        height: 2.4rem;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.2;
+      }
+      
+      .product-price {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #e74c3c;
+        margin-bottom: 8px;
+      }
+      
+      .product-status {
+        .badge {
+          font-size: 0.75rem;
+          padding: 4px 8px;
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px 12px;
+    
+    .products-header {
+      flex-direction: column;
+      align-items: stretch;
+      
+      .search-container {
+        max-width: 100%;
+      }
+    }
+  }
+  
+  .products-grid {
+    .product-card {
+      .product-image-container {
+        height: 180px;
+      }
+      
+      .product-info {
+        padding: 12px;
+        
+        .product-name {
+          font-size: 0.9rem;
+        }
+        
+        .product-price {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}

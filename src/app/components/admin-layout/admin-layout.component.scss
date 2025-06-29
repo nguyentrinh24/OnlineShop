@@ -1,6 +1,7 @@
 .admin-layout {
-  min-height: 100vh;
+  height: 100vh;
   background-color: #f8f9fa;
+  overflow: hidden;
 }
 
 .admin-header {
@@ -11,6 +12,10 @@
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: 80px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   
   h1 {
     margin: 0;
@@ -35,7 +40,8 @@
 
 .admin-container {
   display: flex;
-  min-height: calc(100vh - 80px);
+  height: calc(100vh - 80px);
+  overflow: hidden;
 }
 
 .admin-sidebar {
@@ -43,6 +49,8 @@
   background-color: white;
   box-shadow: 2px 0 4px rgba(0,0,0,0.1);
   padding: 2rem 0;
+  height: 100%;
+  overflow-y: auto;
   
   .nav {
     list-style: none;
@@ -87,4 +95,6 @@
   margin: 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow-y: auto;
+  height: 100%;
 } 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, Renderer2, HostListener, ViewChild } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TokenService } from '../../services/token.service';
@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NotificationService, Notification } from '../../services/notification.service';
 import { ConfirmLogoutModalComponent } from './confirm-logout-modal.component';
+import { FilterService } from '../../services/filter.service';
 
 @Component({
   selector: 'app-header',
@@ -45,7 +46,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showLoginDropdownForNotification = false;
   showLoginDropdownForCart = false;
 
-  private documentClickListener?: () => void;
+  // Template references for better click outside detection
+  @ViewChild('notificationButton', { static: false }) notificationButton!: ElementRef;
+  @ViewChild('notificationDropdown', { static: false }) notificationDropdown!: ElementRef;
+  @ViewChild('loginDropdownNotification', { static: false }) loginDropdownNotification!: ElementRef;
+  @ViewChild('cartButton', { static: false }) cartButton!: ElementRef;
+  @ViewChild('loginDropdownCart', { static: false }) loginDropdownCart!: ElementRef;
 
   constructor(
     private userService: UserService,
@@ -53,6 +59,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private orderService: OrderService,
     private notificationService: NotificationService,
+    private filterService: FilterService,
     private elRef: ElementRef,
     private renderer: Renderer2
   ) {}
@@ -84,7 +91,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();
     }
-    if (this.documentClickListener) this.documentClickListener();
   }
 
   togglePopover(event: Event): void {
@@ -95,19 +101,52 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // Notification dropdown logic
   toggleNotificationDropdown(event: Event) {
     event.preventDefault();
+    event.stopPropagation();
     this.notificationDropdownOpen = !this.notificationDropdownOpen;
     if (this.notificationDropdownOpen) {
       this.notificationService.markAllAsRead();
-      // Listen for outside click
-      this.documentClickListener = this.renderer.listen('document', 'click', (e: Event) => {
-        const dropdown = this.elRef.nativeElement.querySelector('.dropdown-menu.show');
-        if (dropdown && !dropdown.contains(e.target) && !(event.target as HTMLElement).closest('.nav-link')) {
-          this.notificationDropdownOpen = false;
-          if (this.documentClickListener) this.documentClickListener();
-        }
-      });
-    } else {
-      if (this.documentClickListener) this.documentClickListener();
+      // Close other dropdowns
+      this.showLoginDropdownForNotification = false;
+      this.showLoginDropdownForCart = false;
+    }
+  }
+
+  // Click outside handler for all dropdowns
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    
+    // Check if click is outside notification dropdown
+    if (this.notificationDropdownOpen && this.notificationDropdown) {
+      const dropdownElement = this.notificationDropdown.nativeElement;
+      const buttonElement = this.notificationButton?.nativeElement;
+      
+      if (!dropdownElement.contains(target) && 
+          (!buttonElement || !buttonElement.contains(target))) {
+        this.notificationDropdownOpen = false;
+      }
+    }
+    
+    // Check if click is outside login dropdown for notification
+    if (this.showLoginDropdownForNotification && this.loginDropdownNotification) {
+      const dropdownElement = this.loginDropdownNotification.nativeElement;
+      const buttonElement = this.notificationButton?.nativeElement;
+      
+      if (!dropdownElement.contains(target) && 
+          (!buttonElement || !buttonElement.contains(target))) {
+        this.showLoginDropdownForNotification = false;
+      }
+    }
+    
+    // Check if click is outside login dropdown for cart
+    if (this.showLoginDropdownForCart && this.cartButton) {
+      const buttonElement = this.cartButton.nativeElement;
+      const dropdownElement = this.loginDropdownCart?.nativeElement;
+      
+      if (!buttonElement.contains(target) && 
+          (!dropdownElement || !dropdownElement.contains(target))) {
+        this.showLoginDropdownForCart = false;
+      }
     }
   }
 
@@ -150,6 +189,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       event.preventDefault();
       this.showLoginDropdownForCart = !this.showLoginDropdownForCart;
       this.showLoginDropdownForNotification = false;
+      this.notificationDropdownOpen = false;
       return;
     }
     this.setActiveNavItem(2);
@@ -162,6 +202,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       event.preventDefault();
       this.showLoginDropdownForNotification = !this.showLoginDropdownForNotification;
       this.showLoginDropdownForCart = false;
+      this.notificationDropdownOpen = false;
       return;
     }
     this.toggleNotificationDropdown(event);
@@ -172,5 +213,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onLoginDropdownClick() {
     this.router.navigate(['/login']);
+  }
+
+  // Search functionality
+  onSearch() {
+    this.filterService.setKeywordFilter(this.keyword);
+    // Navigate to home page if not already there
+    if (this.router.url !== '/') {
+      this.router.navigate(['/']);
+    }
   }
 }

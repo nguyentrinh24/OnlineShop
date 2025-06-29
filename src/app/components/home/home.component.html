@@ -1,82 +1,104 @@
 <!-- Banner Component -->
 <app-banner></app-banner>
 
-<!-- Products Section -->
-<section class="products-section">
+<!-- Main Content Section -->
+<section class="main-content">
   <div class="container">
-    <h2 class="section-title">Danh sách sản phẩm</h2>
-    <div class="row">
-      <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let product of products; trackBy: trackByProductId">
-        <div class="product-card" (click)="onProductClick(product.id)">
-          <div class="product-image-container position-relative">
-            <img 
-              [src]="product.url" 
-              [alt]="product.name" 
-              class="product-image"
-              loading="lazy"
-              (error)="onImageError($event)"
-              (load)="onImageLoad($event)">
-  
-            <img 
-              *ngIf="product.product_images && product.product_images.length > 1"
-              [src]="getHoverImage(product)" 
-              [alt]="product.name" 
-              class="product-image-hover"
-              loading="lazy">
-  
-            <div class="product-overlay">
-              <button class="btn btn-primary btn-sm">Xem chi tiết</button>
+    <div class="products-header">
+      <h2 class="section-title">Danh sách sản phẩm</h2>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Đang tải sản phẩm...</p>
+    </div>
+
+    <!-- Products Grid -->
+    <div *ngIf="!isLoading" class="products-grid">
+      <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-4" *ngFor="let product of products; trackBy: trackByProductId">
+          <div class="product-card" (click)="onProductClick(product.id)">
+            <div class="product-image-container position-relative">
+              <img 
+                [src]="product.url" 
+                [alt]="product.name" 
+                class="product-image"
+                loading="lazy"
+                (error)="onImageError($event)"
+                (load)="onImageLoad($event)">
+    
+              <img 
+                *ngIf="product.product_images && product.product_images.length > 1"
+                [src]="getHoverImage(product)" 
+                [alt]="product.name" 
+                class="product-image-hover"
+                loading="lazy">
+    
+              <div class="product-overlay">
+                <button class="btn btn-primary btn-sm">Xem chi tiết</button>
+              </div>
             </div>
-          </div>
-          <div class="product-info">
-            <h5 class="product-name">{{ product.name }}</h5>
-            <p class="product-price">{{ product.price | number:'1.2' }}</p>
-            <div class="product-status">
-              <span class="badge bg-success" *ngIf="product.stock_quantity > 0">Còn hàng</span>
-              <span class="badge bg-danger" *ngIf="product.stock_quantity <= 0">Hết hàng</span>
+            <div class="product-info">
+              <h5 class="product-name">{{ product.name }}</h5>
+              <p class="product-price">{{ product.price | number:'1.0-0' }} VNĐ</p>
+              <div class="product-status">
+                <span class="badge bg-success" *ngIf="product.stock_quantity > 0">Còn hàng</span>
+                <span class="badge bg-danger" *ngIf="product.stock_quantity <= 0">Hết hàng</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- No Products Message -->
+      <div *ngIf="products.length === 0 && !isLoading" class="no-products">
+        <div class="text-center py-5">
+          <i class="fas fa-search fa-3x text-muted mb-3"></i>
+          <h4 class="text-muted">Không tìm thấy sản phẩm</h4>
+          <p class="text-muted">Thử thay đổi từ khóa tìm kiếm hoặc danh mục khác</p>
+        </div>
+      </div>
     </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!isLoading && products.length > 0" class="pagination-container">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" *ngIf="currentPage > 0">
+            <a class="page-link" (click)="onPageChange(0)">Đầu</a>
+          </li>
+    
+          <li class="page-item" *ngIf="currentPage > 0">
+            <a class="page-link" (click)="onPageChange(currentPage - 1)">
+              <i class="fa fa-chevron-left"></i>
+            </a>
+          </li>
+    
+          <li 
+            class="page-item" 
+            *ngFor="let page of visiblePages" 
+            [ngClass]="{ 'active': page === currentPage + 1 }">
+            <a class="page-link" (click)="onPageChange(page - 1)">
+              {{ page }}
+            </a>
+          </li>
+    
+          <li class="page-item" *ngIf="currentPage < totalPages - 1">
+            <a class="page-link" (click)="onPageChange(currentPage + 1)">
+              <i class="fa fa-chevron-right"></i>
+            </a>
+          </li>
+    
+          <li class="page-item" *ngIf="currentPage < totalPages - 1">
+            <a class="page-link" (click)="onPageChange(totalPages - 1)">Cuối</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+   
   </div>
 </section>
-
-<!-- Pagination for Products -->
-<div class="container">
-  <div class="d-flex justify-content-center">
-    <nav aria-label="Page navigation">
-      <ul class="pagination">
-        <li class="page-item" *ngIf="currentPage > 0">
-          <a class="page-link" (click)="onPageChange(0)">Đầu</a>
-        </li>
-  
-        <li class="page-item" *ngIf="currentPage > 0">
-          <a class="page-link" (click)="onPageChange(currentPage - 1)">
-            <i class="fa fa-chevron-left"></i>
-          </a>
-        </li>
-  
-        <li 
-          class="page-item" 
-          *ngFor="let page of visiblePages" 
-          [ngClass]="{ 'active': page === currentPage + 1 }">
-          <a class="page-link" (click)="onPageChange(page - 1)">
-            {{ page }}
-          </a>
-        </li>
-  
-        <li class="page-item" *ngIf="currentPage < totalPages - 1">
-          <a class="page-link" (click)="onPageChange(currentPage + 1)">
-            <i class="fa fa-chevron-right"></i>
-          </a>
-        </li>
-  
-        <li class="page-item" *ngIf="currentPage < totalPages - 1">
-          <a class="page-link" (click)="onPageChange(totalPages - 1)">Cuối</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</div>
   

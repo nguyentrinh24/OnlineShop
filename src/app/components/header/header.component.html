@@ -1,20 +1,30 @@
 <header>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-        <svg width="36" height="36" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="-25.926" cy="41.954" r="29.873" fill="#009981"
-            transform="rotate(-76.714 -48.435 5.641) scale(8.56802)" />
-          <path
-            d="M372.164 189.203c0-10.008-8.576-18.593-18.584-18.593h-34.323l-78.638-90.084c-7.154-8.577-18.592-11.439-30.03-8.577l-27.17 8.577c-4.292 1.43-5.723 7.154-2.862 10.007l85.8 81.508H136.236c-4.293 0-7.154 2.861-7.154 7.154v14.292c0 10.016 8.585 18.592 18.592 18.592h20.015v68.639c0 51.476 27.17 81.499 72.931 81.499 14.292 0 25.739-1.431 40.03-7.146v45.753c0 12.87 10.016 22.886 22.885 22.886h20.015c4.293 0 8.577-4.293 8.577-8.586V210.648h32.893c4.292 0 7.145-2.861 7.145-7.145v-14.3zM280.65 312.17c-8.576 4.292-20.015 5.723-28.591 5.723-22.886 0-34.324-11.438-34.324-37.176v-68.639h62.915v100.092z"
-            fill="#fff" />
-        </svg>
-        <span class="fw-semibold brand-name" style="color: #009981; font-size: 1.25rem;">TMobile</span>
-      </a>
+      <!-- Phần bên trái: Brand và Search -->
+      <div class="d-flex align-items-center flex-grow-1">
+        <a class="navbar-brand d-flex align-items-center gap-2 me-4" href="#">
+          <svg width="36" height="36" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="-25.926" cy="41.954" r="29.873" fill="#009981"
+              transform="rotate(-76.714 -48.435 5.641) scale(8.56802)" />
+            <path
+              d="M372.164 189.203c0-10.008-8.576-18.593-18.584-18.593h-34.323l-78.638-90.084c-7.154-8.577-18.592-11.439-30.03-8.577l-27.17 8.577c-4.292 1.43-5.723 7.154-2.862 10.007l85.8 81.508H136.236c-4.293 0-7.154 2.861-7.154 7.154v14.292c0 10.016 8.585 18.592 18.592 18.592h20.015v68.639c0 51.476 27.17 81.499 72.931 81.499 14.292 0 25.739-1.431 40.03-7.146v45.753c0 12.87 10.016 22.886 22.885 22.886h20.015c4.293 0 8.577-4.293 8.577-8.586V210.648h32.893c4.292 0 7.145-2.861 7.145-7.145v-14.3zM280.65 312.17c-8.576 4.292-20.015 5.723-28.591 5.723-22.886 0-34.324-11.438-34.324-37.176v-68.639h62.915v100.092z"
+              fill="#fff" />
+          </svg>
+          <span class="fw-semibold brand-name" style="color: #009981; font-size: 1.25rem;">TMobile</span>
+        </a>
 
-      <!-- Search input -->
-      <div class="header-search">
-        <input type="text" class="form-control search-input" placeholder="Tìm sản phẩm" [(ngModel)]="keyword">
+        <!-- Search input -->
+        <div class="header-search">
+          <input type="text" 
+                 class="form-control search-input" 
+                 placeholder="Tìm sản phẩm" 
+                 [(ngModel)]="keyword"
+                 (keyup.enter)="onSearch()">
+          <button class="btn btn-primary search-btn" (click)="onSearch()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
       </div>
 
       <!-- Nút toggle menu cho mobile -->
@@ -23,28 +33,30 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <!-- Menu bên phải -->
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
+      <!-- Menu bên phải - hoàn toàn tách biệt -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
           <li class="nav-item">
             <a class="nav-link" [ngClass]="{ 'active': activeNavItem === 0 }" (click)="setActiveNavItem(0)"
               routerLink="/">Trang chủ</a>
           </li>
           <li class="nav-item position-relative">
             <a class="nav-link d-flex align-items-center" [ngClass]="{ 'active': activeNavItem === 1 }"
-               (click)="onNotificationClick($event)" style="cursor:pointer;">
+               (click)="onNotificationClick($event)" style="cursor:pointer;" #notificationButton>
               <i class="fas fa-bell me-1"></i>
               Thông báo
               <span *ngIf="unreadCount > 0" class="badge bg-danger position-absolute top-0 start-100 translate-middle p-1 rounded-circle" style="font-size: 10px;">{{ unreadCount }}</span>
             </a>
             <!-- Dropdown yêu cầu login cho thông báo -->
-            <div class="dropdown-menu dropdown-menu-end show" *ngIf="showLoginDropdownForNotification" style="min-width: 220px; right:0; left:auto;">
+            <div class="dropdown-menu dropdown-menu-end show" *ngIf="showLoginDropdownForNotification" 
+                 style="min-width: 220px; right:0; left:auto;" #loginDropdownNotification>
               <div class="dropdown-item text-center text-muted">Bạn cần đăng nhập để sử dụng chức năng này.</div>
               <div class="dropdown-divider"></div>
               <button class="dropdown-item text-primary fw-bold" (click)="onLoginDropdownClick()">Đăng nhập</button>
             </div>
             <!-- Dropdown thông báo thật sự nếu đã login (giữ nguyên) -->
-            <div class="dropdown-menu dropdown-menu-end show" *ngIf="notificationDropdownOpen" style="min-width: 320px; max-width: 350px; max-height: 400px; overflow-y: auto; right:0; left:auto;">
+            <div class="dropdown-menu dropdown-menu-end show" *ngIf="notificationDropdownOpen" 
+                 style="min-width: 320px; max-width: 350px; max-height: 400px; overflow-y: auto; right:0; left:auto;" #notificationDropdown>
               <div *ngIf="notifications.length === 0" class="dropdown-item text-muted">Không có thông báo</div>
               <div *ngFor="let n of notifications" class="dropdown-item" [ngClass]="n.type">
                 <span>{{ n.message }}</span>
@@ -58,10 +70,25 @@
           <!-- Cart nav-item: only show if logged in -->
           <li class="nav-item position-relative" *ngIf="userResponse">
             <a class="nav-link d-flex align-items-center" [ngClass]="{ 'active': activeNavItem === 2 }"
-               (click)="onCartClick($event)" routerLink="/orders">
+               (click)="onCartClick($event)" routerLink="/orders" #cartButton>
               <i class="fas fa-shopping-cart me-1"></i>
               Giỏ hàng
             </a>
+          </li>
+          <!-- Cart nav-item for non-logged in users -->
+          <li class="nav-item position-relative" *ngIf="!userResponse">
+            <a class="nav-link d-flex align-items-center" [ngClass]="{ 'active': activeNavItem === 2 }"
+               (click)="onCartClick($event)" style="cursor:pointer;" #cartButton>
+              <i class="fas fa-shopping-cart me-1"></i>
+              Giỏ hàng
+            </a>
+            <!-- Dropdown yêu cầu login cho giỏ hàng -->
+            <div class="dropdown-menu dropdown-menu-end show" *ngIf="showLoginDropdownForCart" 
+                 style="min-width: 220px; right:0; left:auto;" #loginDropdownCart>
+              <div class="dropdown-item text-center text-muted">Bạn cần đăng nhập để sử dụng giỏ hàng.</div>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item text-primary fw-bold" (click)="onLoginDropdownClick()">Đăng nhập</button>
+            </div>
           </li>
           <li class="nav-item">
             @if(userResponse) {

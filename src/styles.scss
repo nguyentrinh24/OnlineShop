@@ -1,10 +1,63 @@
 @import 'app/styles/shared-styles.scss';
 
+html, body {
+    height: 100%;
+    overflow: hidden; // Ngăn cuộn toàn trang
+}
+
 body {
     background-color: $hhm-gray-light;
     color: $hhm-black;
     font-family: 'Segoe UI', Arial, sans-serif;
     font-size: 16px;
+}
+
+// Layout cố định - chỉ main content cuộn
+.user-layout {
+    height: 100vh;
+    overflow: hidden; // Ngăn cuộn toàn layout
+}
+
+.user-layout .layout-container {
+    height: calc(100vh - 80px); // Chiều cao trừ đi header
+    overflow: hidden; // Ngăn cuộn container
+}
+
+.user-layout .main-content {
+    overflow-y: auto; // Chỉ main content được cuộn
+    height: 100%;
+}
+
+.user-layout app-sidebar {
+    overflow-y: auto; // Sidebar có thể cuộn riêng nếu cần
+    height: 100%;
+}
+
+// Mobile layout - cho phép cuộn toàn trang
+@media (max-width: 900px) {
+    html, body {
+        overflow: auto; // Cho phép cuộn trên mobile
+    }
+    
+    .user-layout {
+        height: auto;
+        overflow: visible;
+    }
+    
+    .user-layout .layout-container {
+        height: auto;
+        overflow: visible;
+    }
+    
+    .user-layout .main-content {
+        overflow: visible;
+        height: auto;
+    }
+    
+    .user-layout app-sidebar {
+        overflow: visible;
+        height: auto;
+    }
 }
 
 .card {
@@ -24,6 +77,7 @@ button, .btn-primary {
     transition: background 0.2s;
     padding: 8px 20px;
 }
+
 button:hover, .btn-primary:hover {
     background-color: darken($hhm-blue, 7%);
 }
