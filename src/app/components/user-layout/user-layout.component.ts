@@ -37,7 +37,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   private filterSubscription?: Subscription;
   isMobile = false;
   isBrowser: boolean = false;
-  showFooter = false; // Biến để kiểm soát hiển thị footer
+  showFooter = true; // Luôn hiển thị footer để tránh vấn đề cuộn
 
   @ViewChild('mainContent', { static: false }) mainContent!: ElementRef;
 
@@ -59,14 +59,6 @@ export class UserLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  // Thêm listener cho sự kiện cuộn
-  @HostListener('window:scroll', ['$event'])
-  onScroll() {
-    if (this.isBrowser && this.mainContent) {
-      this.checkScrollPosition();
-    }
-  }
-
   ngOnInit() {
     // Reset filter when navigating to home page
     this.filterSubscription = this.router.events.subscribe(() => {
@@ -77,20 +69,10 @@ export class UserLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
         this.filterService.resetFilter();
       }
     });
-
-    // Kiểm tra vị trí cuộn ban đầu sau khi component đã render
-    setTimeout(() => {
-      this.checkScrollPosition();
-    }, 100);
   }
 
   ngAfterViewInit() {
-    // Kiểm tra vị trí cuộn sau khi view đã được khởi tạo
-    if (this.isBrowser) {
-      setTimeout(() => {
-        this.checkScrollPosition();
-      }, 200);
-    }
+    // Không cần kiểm tra scroll position nữa
   }
 
   ngOnDestroy() {
@@ -105,29 +87,10 @@ export class UserLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  // Kiểm tra vị trí cuộn để ẩn/hiện footer
+  // Đơn giản hóa checkScrollPosition - luôn hiển thị footer
   checkScrollPosition() {
-    if (!this.mainContent || !this.isBrowser) return;
-
-    // Trên mobile, luôn hiển thị footer
-    if (this.isMobile) {
-      this.showFooter = true;
-      return;
-    }
-
-    const element = this.mainContent.nativeElement;
-    const scrollTop = element.scrollTop;
-    const scrollHeight = element.scrollHeight;
-    const clientHeight = element.clientHeight;
-    
-    // Hiển thị footer khi cuộn gần đến cuối (còn 200px)
-    const threshold = 200;
-    const isNearBottom = scrollTop + clientHeight >= scrollHeight - threshold;
-    
-    // Chỉ thay đổi trạng thái nếu cần thiết để tránh re-render không cần thiết
-    if (this.showFooter !== isNearBottom) {
-      this.showFooter = isNearBottom;
-    }
+    // Luôn hiển thị footer để tránh vấn đề cuộn
+    this.showFooter = true;
   }
 
   isOrdersPage(): boolean {

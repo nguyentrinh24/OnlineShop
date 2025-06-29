@@ -3,7 +3,7 @@
   <div class="layout-container">
     <!-- Sidebar chỉ hiển thị cho các trang không phải user-orders -->
     <app-sidebar *ngIf="!isOrdersPage()"></app-sidebar>
-    <main #mainContent class="main-content" [class.full-width]="isOrdersPage()" (scroll)="checkScrollPosition()">
+    <main #mainContent class="main-content" [class.full-width]="isOrdersPage()">
       <router-outlet></router-outlet>
       <div *ngIf="showFooter" [@footerAnimation]="'show'" class="footer-container">
         <app-footer></app-footer>

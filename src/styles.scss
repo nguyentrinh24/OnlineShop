@@ -2,7 +2,7 @@
 
 html, body {
     height: 100%;
-    overflow: hidden; // Ngăn cuộn toàn trang
+    // Loại bỏ overflow hidden để cho phép cuộn tự nhiên
 }
 
 body {
@@ -12,28 +12,39 @@ body {
     font-size: 16px;
 }
 
-// Layout cố định - chỉ main content cuộn
+// Layout linh hoạt - cho phép cuộn tự nhiên
 .user-layout {
-    height: 100vh;
-    overflow: hidden; // Ngăn cuộn toàn layout
+    min-height: 100vh;
+    // Loại bỏ overflow hidden
 }
 
 .user-layout .layout-container {
-    height: calc(100vh - 80px); // Chiều cao trừ đi header
-    overflow: hidden; // Ngăn cuộn container
+    min-height: calc(100vh - 80px); // Chiều cao tối thiểu trừ đi header
+    // Loại bỏ overflow hidden
 }
 
 .user-layout .main-content {
-    overflow-y: auto; // Chỉ main content được cuộn
-    height: 100%;
+    // Cho phép cuộn tự nhiên
+    min-height: 100%;
 }
 
 .user-layout app-sidebar {
-    overflow-y: auto; // Sidebar có thể cuộn riêng nếu cần
-    height: 100%;
+    // Sidebar có thể cuộn riêng nếu cần
+    max-height: 100vh;
+    overflow-y: auto;
 }
 
-// Mobile layout - cho phép cuộn toàn trang
+// Đảm bảo tất cả component container có thể cuộn tự nhiên
+.user-orders-container,
+.order-page-container,
+.user-profile-container,
+.register-container,
+.order-detail-container {
+    min-height: auto !important;
+    height: auto !important;
+}
+
+// Mobile layout - giữ nguyên logic mobile
 @media (max-width: 900px) {
     html, body {
         overflow: auto; // Cho phép cuộn trên mobile
@@ -57,6 +68,15 @@ body {
     .user-layout app-sidebar {
         overflow: visible;
         height: auto;
+    }
+    
+    // Trên mobile, các component có thể có min-height
+    .user-orders-container,
+    .order-page-container,
+    .user-profile-container,
+    .register-container,
+    .order-detail-container {
+        min-height: 100vh !important;
     }
 }
 
